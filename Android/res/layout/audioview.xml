@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp">
+    
+    <RelativeLayout
+	    android:id="@+id/linlayout1"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content">
+	    
+	        <Button
+	            android:id="@+id/narrow_results"
+	            android:layout_alignBottom="@+id/search_box"
+	            android:layout_alignParentRight="true"
+	            android:text="@string/search"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:onClick="narrowResults"/> 
+	        
+	        <AutoCompleteTextView
+	            android:id="@+id/search_box"
+	            android:layout_alignParentLeft="true"
+	            android:layout_toLeftOf="@+id/narrow_results"
+	            android:layout_centerVertical="true"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:singleLine="true" />
+	</RelativeLayout>
+
+	<ListView
+    	android:id="@+id/characterSearchResults"
+    	android:layout_marginTop="10dp"
+    	android:layout_below="@+id/message"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content" />
+
+	<TextView
+	    android:id="@+id/message"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:layout_below="@+id/linlayout1"/>
+ 
+</RelativeLayout>
