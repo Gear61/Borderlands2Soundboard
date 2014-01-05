@@ -225,8 +225,11 @@ public class MainActivity extends Activity
 	{
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.audioview);
+		
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
+		TextView title = (TextView) findViewById(R.id.title);
+		title.setText((currentCharacter.replace("_", " ")) + " Quotes");
+		
 		final ListView listview = (ListView) findViewById(R.id.characterSearchResults);
 
 		// clear previous results in the LV
@@ -298,7 +301,7 @@ public class MainActivity extends Activity
 		});
 		TextView list_message = (TextView) findViewById(R.id.message);
 		String stats = "This app currently has " + fileList.size() + " sound bites associated with <b>" + currentCharacter.replace("_", " ")
-				+ "</b>. Simply click on a file to hear it.";
+				+ "</b>. Simply click on a file to hear it. Search for nothing to bring back this full, original list of files.";
 		list_message.setText(Html.fromHtml(stats));
 		
 		// Set up auto-complete
@@ -413,6 +416,11 @@ public class MainActivity extends Activity
 		if (fileList.size() == 0)
 		{
 			stats = "No audio files were found for your given search criteria.";
+		}
+		else if (quoteName.trim().equals(""))
+		{
+			stats = "This app currently has " + fileList.size() + " sound bites associated with <b>" + currentCharacter.replace("_", " ")
+					+ "</b>.";
 		}
 		else
 		{
