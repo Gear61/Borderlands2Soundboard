@@ -1,101 +1,127 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:background="@color/white">
-    
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="30dp"
-        android:contentDescription="@string/CLAPPAY"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/claptrapgoingham" />
-    
-    <LinearLayout
-        android:id="@+id/godLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView1"
-        android:gravity="center"
-        android:orientation="horizontal" >
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
 
-	    <LinearLayout
-	        android:id="@+id/linlayout1"
+	<RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center">
+	    
+	    <ImageView
+	        android:id="@+id/imageView1"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:gravity="center"
-	        android:layout_marginRight="20dp"
-	        android:orientation="vertical" >
-	
-	        <Button
-	            android:id="@+id/claptrap"
-	            android:paddingTop="14sp"
-	            android:paddingRight="14sp"
-	            android:paddingLeft="14sp"
-	            style="?android:attr/borderlessButtonStyle"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:drawableTop="@drawable/claptrap_icon"
-	            android:onClick="prepareClaptrap"
-	            android:text="@string/claptrap"
-	            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
-	
-	        <Button
-	            android:id="@+id/moxxi"
-	            android:paddingTop="14sp"
-	            android:paddingRight="14sp"
-	            android:paddingLeft="14sp"
-	            android:layout_marginTop="20dp"
-	            style="?android:attr/borderlessButtonStyle"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:drawableTop="@drawable/moxxi"
-	            android:onClick="prepareMoxxi"
-	            android:text="@string/moxxi"
-	            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
-	    </LinearLayout>
-	
-	    <LinearLayout
-	        android:id="@+id/linlayout2"
-	        android:layout_width="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:padding="10dp"
+	        android:contentDescription="@string/CLAPPAY"
+	        android:adjustViewBounds="true"
+	        android:scaleType="fitCenter"
+	        android:src="@drawable/claptrapgoingham" />
+	    
+	    <TextView
+	        android:id="@+id/quick_title"
+	        android:layout_below="@+id/imageView1"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
+	        android:textSize="14sp"
+	        android:textStyle="bold"
 	        android:gravity="center"
-	        android:layout_marginLeft="20dp"
-	        android:orientation="vertical" >
+	        android:text="@string/hints_title"/>
+	    
+	    <TextView
+	        android:id="@+id/hints"
+	        android:layout_below="@+id/quick_title"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginLeft="10dp"
+	        android:textSize="12sp"
+	        android:gravity="center"
+	        android:text="@string/hints"/>
+	    
+	    <LinearLayout
+	        android:id="@+id/godLayout"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/hints"
+	        android:gravity="center"
+	        android:orientation="horizontal" >
 	
-	        <Button
-	            android:id="@+id/mister_torgue"
-	            android:paddingTop="14sp"
-	            android:paddingRight="14sp"
-	            android:paddingLeft="14sp"
-	            style="?android:attr/borderlessButtonStyle"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:drawableTop="@drawable/mistertorgue"
-	            android:onClick="prepareTorgue"
-	            android:text="@string/mister_torgue"
-	            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
-	
-	        <Button
-	            android:id="@+id/tiny_tina"
-	            android:paddingTop="14sp"
-	            android:paddingRight="14sp"
-	            android:paddingLeft="14sp"
-	            android:layout_marginTop="20dp"
-	            style="?android:attr/borderlessButtonStyle"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:drawableTop="@drawable/tinytina"
-	            android:onClick="prepareTina"
-	            android:text="@string/tiny_tina"
-	            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		    <LinearLayout
+		        android:id="@+id/linlayout1"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:gravity="center"
+		        android:layout_marginRight="20dp"
+		        android:orientation="vertical" >
+		
+		        <Button
+		            android:id="@+id/claptrap"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/claptrap_icon"
+		            android:onClick="prepareClaptrap"
+		            android:text="@string/claptrap"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		
+		        <Button
+		            android:id="@+id/moxxi"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            android:layout_marginTop="20dp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/moxxi"
+		            android:onClick="prepareMoxxi"
+		            android:text="@string/moxxi"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		    </LinearLayout>
+		
+		    <LinearLayout
+		        android:id="@+id/linlayout2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:gravity="center"
+		        android:layout_marginLeft="20dp"
+		        android:orientation="vertical" >
+		
+		        <Button
+		            android:id="@+id/mister_torgue"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/mistertorgue"
+		            android:onClick="prepareTorgue"
+		            android:text="@string/mister_torgue"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		
+		        <Button
+		            android:id="@+id/tiny_tina"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            android:layout_marginTop="20dp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/tinytina"
+		            android:onClick="prepareTina"
+		            android:text="@string/tiny_tina"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		    </LinearLayout>
 	    </LinearLayout>
-    </LinearLayout>
-
-</RelativeLayout>
+	
+	</RelativeLayout>
+</ScrollView>

@@ -1,7 +1,10 @@
 package com.claptrapsoundboard;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,12 +12,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -27,6 +38,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -41,7 +53,7 @@ public class MainActivity extends Activity
 	private int prg = 0;
 	private TextView tv;
 	private ProgressBar pb;
-	private String currentCharacter;
+	private static String currentCharacter;
 	
 	MediaPlayer player = new MediaPlayer();
 	Map<String, ArrayList<Spanned>> cache = new HashMap<String, ArrayList<Spanned>>();
@@ -50,6 +62,112 @@ public class MainActivity extends Activity
 	final public int getFileSize()
 	{
 		return fileSize;
+	}
+	
+	private static AssetManager manager = null;
+	public void setAssetManager()
+	{
+		manager = getAssets();
+	}
+	
+	private static ContentResolver resolver = null;
+	public void setResolver()
+	{
+		resolver = getContentResolver();
+	}
+	
+	public static void ringConfirmation(String message, final String fileName, final Context context)
+	{
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+		// set dialog message
+		alertDialogBuilder.setMessage(Html.fromHtml(message)).setCancelable(false)
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int whichButton)
+					{
+						dialog.cancel();
+						
+						// Set ringtone
+						File newSoundFile = new File(Environment.getExternalStorageDirectory().getPath() + 
+								"/Borderlands2/Ringtones", "borderlands2ringtone.ogg");
+						
+						if (newSoundFile.exists())
+						{
+							newSoundFile.delete();
+						}
+	
+						InputStream fis;
+						try
+						{
+							fis = manager.open(currentCharacter + "/" + fileName);
+						}
+						catch (IOException e)
+						{
+							Util.showDialog("We were unable to set your ringtone.", context);
+							return;
+						}
+
+						try
+						{
+							byte[] readData = new byte[1024];
+							FileOutputStream fos = new FileOutputStream(newSoundFile);
+							int i = fis.read(readData);
+
+							while (i != -1)
+							{
+								fos.write(readData, 0, i);
+								i = fis.read(readData);
+							}
+							fos.close();
+						}
+						catch (IOException io)
+						{
+							Util.showDialog("We were unable to set your ringtone.", context);
+							return;
+						}
+						
+						// Set up MediaPlayer to get file duration in ms
+						MediaPlayer mp = MediaPlayer.create(context,Uri.parse(Environment.getExternalStorageDirectory().getPath()
+								+ "/Borderlands2/Ringtones/borderlands2ringtone.ogg"));
+
+						ContentValues values = new ContentValues();
+						values.put(MediaStore.MediaColumns.DATA, newSoundFile.getAbsolutePath());
+						values.put(MediaStore.MediaColumns.TITLE, "Borderlands 2 Ringtone");
+						values.put(MediaStore.MediaColumns.SIZE, newSoundFile.length());
+						values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/ogg");
+						values.put(MediaStore.Audio.Media.ARTIST, currentCharacter.replace("_", " "));
+						values.put(MediaStore.Audio.Media.DURATION, mp.getDuration());
+						values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+						values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+						values.put(MediaStore.Audio.Media.IS_ALARM, false);
+						values.put(MediaStore.Audio.Media.IS_MUSIC, false);
+						
+						// Remove all previous incarnations of the Borderlands 2 ringtone
+						String where = MediaStore.MediaColumns.TITLE + " = ?";
+						String[] args = new String[] {"Borderlands 2 Ringtone"};
+						resolver.delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, where, args);
+						
+						// Insert new ringtone into the database
+						Uri uri = MediaStore.Audio.Media.getContentUriForPath(newSoundFile.getAbsolutePath());
+						Uri newUri = resolver.insert(uri, values);
+
+						RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri);
+						Util.showDialog("Your ringtone was successfully changed.", context);
+					}
+				}).setNegativeButton("No", new DialogInterface.OnClickListener()
+				{
+					public void onClick(final DialogInterface dialog, int id)
+					{
+						dialog.dismiss();
+					}
+				});
+
+		// create alert dialog
+		AlertDialog alertDialog = alertDialogBuilder.create();
+
+		// show it
+		alertDialog.show();
 	}
 
 	private ArrayList<String> listAssetFiles(String path)
@@ -96,10 +214,30 @@ public class MainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		// Create folder in external storage for us to store things in
+		// Check if SD card is mounted
+		if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
+		{
+			File Dir = new File(android.os.Environment.getExternalStorageDirectory(), "Borderlands2/Ringtones");
+			if (!Dir.exists()) // if directory is not here
+			{
+				Dir.mkdirs(); // make directory
+			}
+		}
+		
 		// Leave in to trigger a reboot
 		// datasource.deleteAll();
 
-		final AssetManager assetManager = getAssets();
+		// Initiate AssetManager and ContentResolver objects
+		if (manager == null)
+		{
+			setAssetManager();
+		}
+		if (resolver == null)
+		{
+			setResolver();
+		}
+		
 		final ArrayList<String> listFiles = listAssetFiles("lists");
 
 		// Run a SQL query on the number of rows in the user's card database
@@ -113,7 +251,7 @@ public class MainActivity extends Activity
 		{
 			for (int i = 0; i < listFiles.size(); i++)
 			{
-				fileSize += Util.count(assetManager.open("lists/" + listFiles.get(i)));
+				fileSize += Util.count(manager.open("lists/" + listFiles.get(i)));
 			}
 		}
 		catch (IOException e1)
@@ -161,7 +299,7 @@ public class MainActivity extends Activity
 						character = listFiles.get(i).split(".txt")[0];
 						try
 						{
-							BufferedReader in = new BufferedReader(new InputStreamReader(assetManager.open("lists/"
+							BufferedReader in = new BufferedReader(new InputStreamReader(manager.open("lists/"
 									+ listFiles.get(i))));
 							while ((line = in.readLine()) != null)
 							{
@@ -261,11 +399,6 @@ public class MainActivity extends Activity
 			@Override
 			public void onItemClick(AdapterView<?> parent, final View view, int position, long id) throws IllegalArgumentException, IllegalStateException
 			{
-				// Account for the empty placeholder element at the top
-				if (((Spanned) parent.getItemAtPosition(position)).toString().trim().equals(""))
-				{
-					return;
-				}
 				player.reset();
 				AssetFileDescriptor afd = null;
 				try
@@ -299,9 +432,22 @@ public class MainActivity extends Activity
 			    player.start();
 			}
 		});
+		
+		listview.setOnItemLongClickListener(new OnItemLongClickListener()
+		{
+            public boolean onItemLongClick(AdapterView<?> parent, final View view, int position, long id)
+            {
+            	String fileName = ((Spanned) parent.getItemAtPosition(position)).toString().trim();
+            	String message = "Would you like to set the quote \"" + fileName + "\" by <b>"
+            					 + currentCharacter.replace("_", " ") + "</b> as your ringtone?";
+            	ringConfirmation(message, fileName + ".mp3", context);
+                return true;
+            }
+        });
+		
 		TextView list_message = (TextView) findViewById(R.id.message);
 		String stats = "This app currently has " + fileList.size() + " sound bites associated with <b>" + currentCharacter.replace("_", " ")
-				+ "</b>. Simply click on a file to hear it. Search for nothing to bring back this full, original list of files.";
+				+ "</b>. Simply click on a file to hear it.";
 		list_message.setText(Html.fromHtml(stats));
 		
 		// Set up auto-complete
@@ -355,8 +501,7 @@ public class MainActivity extends Activity
 		
 		ArrayList<Spanned> fileList = new ArrayList<Spanned>();
 		// Get all sound bites associated with character
-		String[] columns =
-		{ MySQLiteHelper.COLUMN_NAME };
+		String[] columns = { MySQLiteHelper.COLUMN_NAME };
 		String whereClause = "name LIKE ? COLLATE NOCASE AND character = ?";
 		String[] whereArgs = new String[] {"%" + quoteName + "%", currentCharacter};
 		Cursor cursor = datasource.execQuery(columns, whereClause, whereArgs, null, null, null);
@@ -368,49 +513,6 @@ public class MainActivity extends Activity
 		FileAdapter lvAdapter = new FileAdapter(context, fileList);
 		listview.setAdapter(lvAdapter);
 		
-		listview.setOnItemClickListener(new OnItemClickListener()
-		{
-			@Override
-			public void onItemClick(AdapterView<?> parent, final View view, int position, long id) throws IllegalArgumentException, IllegalStateException
-			{
-				// Account for the empty placeholder element at the top
-				if (((Spanned) parent.getItemAtPosition(position)).toString().trim().equals(""))
-				{
-					return;
-				}
-				player.reset();
-				AssetFileDescriptor afd = null;
-				try
-				{
-					String file = currentCharacter + "/" + ((Spanned) parent.getItemAtPosition(position)).toString().trim() + ".mp3";
-					afd = getAssets().openFd(file);
-				}
-				catch (IOException e)
-				{
-					Util.showDialog("We are unable to play the requested audio file.", context);
-					return;
-				}
-				try
-				{
-					player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
-				}
-				catch (IOException e1)
-				{
-					Util.showDialog("We are unable to play the requested audio file.", context);
-					e1.printStackTrace();
-				}
-				try
-				{
-					player.prepare();
-				}
-				catch (IOException e)
-				{
-					Util.showDialog("We are unable to play the requested audio file.", context);
-					e.printStackTrace();
-				}
-			    player.start();
-			}
-		});
 		TextView list_message = (TextView) findViewById(R.id.message);
 		String stats;
 		if (fileList.size() == 0)
