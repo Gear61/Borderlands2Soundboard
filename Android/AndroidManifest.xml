@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.claptrapsoundboard"
-    android:versionCode="3"
-    android:versionName="1.2" >
+    android:versionCode="5"
+    android:versionName="2.0" >
 
     <uses-sdk
-        android:minSdkVersion="0"
+        android:minSdkVersion="11"
         android:targetSdkVersion="18" />
     
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

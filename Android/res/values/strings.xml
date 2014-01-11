@@ -14,11 +14,16 @@
 	<string name="mister_torgue">Mister\nTorgue</string>
 	<string name="moxxi">Moxxi\n</string>
 	<string name="tiny_tina">Tiny Tina\n</string>
+	<string name="sir_hammerlock">Sir\nHammerlock</string>
+	<string name="random_file">Random\nSound</string>
 	<string name="CLAPPAY">Claptrap goin\' HAM.</string>
 	<string name="hints_title">Quick Hints</string>
 	<string name="hints">- Hold/long click on a file to set it as your ringtone.\n- Search for nothing to bring back full lists of files.</string>
 	
 	<!-- Results Page -->
 	<string name="search">Search</string>
+	
+	<!-- Action Bar -->
+	<string name="silence">Silence</string>
 
 </resources>

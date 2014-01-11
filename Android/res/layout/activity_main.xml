@@ -76,13 +76,25 @@
 		            android:paddingTop="14sp"
 		            android:paddingRight="14sp"
 		            android:paddingLeft="14sp"
-		            android:layout_marginTop="20dp"
 		            style="?android:attr/borderlessButtonStyle"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:drawableTop="@drawable/moxxi"
 		            android:onClick="prepareMoxxi"
 		            android:text="@string/moxxi"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		        
+		        <Button
+		            android:id="@+id/sir_hammerlock"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/sir_hammerlock"
+		            android:onClick="prepareHammerlock"
+		            android:text="@string/sir_hammerlock"
 		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
 		    </LinearLayout>
 		
@@ -112,13 +124,25 @@
 		            android:paddingTop="14sp"
 		            android:paddingRight="14sp"
 		            android:paddingLeft="14sp"
-		            android:layout_marginTop="20dp"
 		            style="?android:attr/borderlessButtonStyle"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:drawableTop="@drawable/tinytina"
 		            android:onClick="prepareTina"
 		            android:text="@string/tiny_tina"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		        
+		        <Button
+		            android:id="@+id/random"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/single_note"
+		            android:onClick="randomFile"
+		            android:text="@string/random_file"
 		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
 		    </LinearLayout>
 	    </LinearLayout>

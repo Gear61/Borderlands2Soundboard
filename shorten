@@ -1,0 +1,3 @@
+cd temp
+rename 's/Hammerlock- //' *
+rename 's/^(.{75}).*(\..*)$/$1$2/' *

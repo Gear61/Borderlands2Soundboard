@@ -486,6 +486,33 @@ public class MainActivity extends Activity
 		setUpAudioList();
 	}
 	
+	public void prepareHammerlock (View view)
+	{
+		currentCharacter = "Sir_Hammerlock";
+		setUpAudioList();
+	}
+	
+	public void randomFile (View view) throws IOException
+	{	
+		Cursor cursor = datasource.execQuery(null, null, null, null, null, "RANDOM() LIMIT 1");
+		String file = "";
+		if (cursor.moveToNext())
+		{
+			file = cursor.getString(1) + "/" + cursor.getString(0).trim() + ".mp3";
+		}
+		else
+		{
+			Util.showDialog("Random soundbite functionality failed.", context);
+			return;
+		}
+		player.reset();
+		AssetFileDescriptor afd = null;
+		afd = getAssets().openFd(file);
+		player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+		player.prepare();
+		player.start();
+	}
+	
 	public void narrowResults(View view)
 	{
 		killKeyboard();
@@ -549,6 +576,9 @@ public class MainActivity extends Activity
 				killKeyboard();
 				setContentView(R.layout.activity_main);
 				getActionBar().setDisplayHomeAsUpEnabled(false);
+				break;
+			case R.id.silence:
+				player.stop();
 				break;
 			default:
 				break;

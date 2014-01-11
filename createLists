@@ -13,6 +13,9 @@ find *.mp3 > ../lists/Tiny_Tina.txt
 cd ..
 cd Mister_Torgue
 find *.mp3 > ../lists/Mister_Torgue.txt
+cd ..
+cd Sir_Hammerlock
+find *.mp3 > ../lists/Sir_Hammerlock.txt
 
 cd ../lists
 allFiles=($(find *.txt))
