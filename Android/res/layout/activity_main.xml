@@ -15,38 +15,18 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_centerHorizontal="true"
-	        android:padding="10dp"
+	        android:padding="15dp"
 	        android:contentDescription="@string/CLAPPAY"
 	        android:adjustViewBounds="true"
 	        android:scaleType="fitCenter"
-	        android:src="@drawable/claptrapgoingham" />
-	    
-	    <TextView
-	        android:id="@+id/quick_title"
-	        android:layout_below="@+id/imageView1"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:textSize="14sp"
-	        android:textStyle="bold"
-	        android:gravity="center"
-	        android:text="@string/hints_title"/>
-	    
-	    <TextView
-	        android:id="@+id/hints"
-	        android:layout_below="@+id/quick_title"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginRight="10dp"
-	        android:layout_marginLeft="10dp"
-	        android:textSize="12sp"
-	        android:gravity="center"
-	        android:text="@string/hints"/>
+	        android:src="@drawable/hamstatus" />
 	    
 	    <LinearLayout
 	        android:id="@+id/godLayout"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_below="@+id/hints"
+	        android:paddingTop="15dp"
+	        android:layout_below="@+id/imageView1"
 	        android:gravity="center"
 	        android:orientation="horizontal" >
 	
@@ -59,43 +39,32 @@
 		        android:orientation="vertical" >
 		
 		        <Button
-		            android:id="@+id/claptrap"
+		            android:id="@+id/characters"
 		            android:paddingTop="14sp"
 		            android:paddingRight="14sp"
 		            android:paddingLeft="14sp"
 		            style="?android:attr/borderlessButtonStyle"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:drawableTop="@drawable/claptrap_icon"
-		            android:onClick="prepareClaptrap"
-		            android:text="@string/claptrap"
+		            android:drawableTop="@drawable/allcharacters"
+		            android:onClick="allChars"
+		            android:text="@string/characters"
 		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
 		
 		        <Button
-		            android:id="@+id/moxxi"
+		            android:id="@+id/morestats"
+		            android:layout_marginTop="15dp"
 		            android:paddingTop="14sp"
 		            android:paddingRight="14sp"
 		            android:paddingLeft="14sp"
 		            style="?android:attr/borderlessButtonStyle"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:drawableTop="@drawable/moxxi"
-		            android:onClick="prepareMoxxi"
-		            android:text="@string/moxxi"
+		            android:drawableTop="@drawable/morestats"
+		            android:onClick="moreStats"
+		            android:text="@string/more_stats"
 		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
 		        
-		        <Button
-		            android:id="@+id/sir_hammerlock"
-		            android:paddingTop="14sp"
-		            android:paddingRight="14sp"
-		            android:paddingLeft="14sp"
-		            style="?android:attr/borderlessButtonStyle"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:drawableTop="@drawable/sir_hammerlock"
-		            android:onClick="prepareHammerlock"
-		            android:text="@string/sir_hammerlock"
-		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
 		    </LinearLayout>
 		
 		    <LinearLayout
@@ -107,43 +76,32 @@
 		        android:orientation="vertical" >
 		
 		        <Button
-		            android:id="@+id/mister_torgue"
+		            android:id="@+id/stat_overview"
 		            android:paddingTop="14sp"
 		            android:paddingRight="14sp"
 		            android:paddingLeft="14sp"
 		            style="?android:attr/borderlessButtonStyle"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:drawableTop="@drawable/mistertorgue"
-		            android:onClick="prepareTorgue"
-		            android:text="@string/mister_torgue"
+		            android:drawableTop="@drawable/stats"
+		            android:onClick="goToOverview"
+		            android:text="@string/stats"
 		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
 		
 		        <Button
-		            android:id="@+id/tiny_tina"
+		            android:id="@+id/about"
+		            android:layout_marginTop="15dp"
 		            android:paddingTop="14sp"
 		            android:paddingRight="14sp"
 		            android:paddingLeft="14sp"
 		            style="?android:attr/borderlessButtonStyle"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:drawableTop="@drawable/tinytina"
-		            android:onClick="prepareTina"
-		            android:text="@string/tiny_tina"
+		            android:drawableTop="@drawable/about"
+		            android:onClick="about"
+		            android:text="@string/about"
 		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
-		        
-		        <Button
-		            android:id="@+id/random"
-		            android:paddingTop="14sp"
-		            android:paddingRight="14sp"
-		            android:paddingLeft="14sp"
-		            style="?android:attr/borderlessButtonStyle"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:drawableTop="@drawable/single_note"
-		            android:onClick="randomFile"
-		            android:text="@string/random_file"
-		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+
 		    </LinearLayout>
 	    </LinearLayout>
 	

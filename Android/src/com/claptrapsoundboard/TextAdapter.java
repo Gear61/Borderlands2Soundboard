@@ -3,6 +3,7 @@ package com.claptrapsoundboard;
 import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.widget.Filter;
 import android.view.View;
@@ -10,21 +11,21 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class TextAdapter extends ArrayAdapter<String> {
-    private ArrayList<String> items;
-    private ArrayList<String> itemsAll;
-    private ArrayList<String> suggestions;
+public class TextAdapter extends ArrayAdapter<Spanned> {
+    private ArrayList<Spanned> items;
+    private ArrayList<Spanned> itemsAll;
+    private ArrayList<Spanned> suggestions;
     
     private Context context;
 
     @SuppressWarnings("unchecked")
-    public TextAdapter(Context context, int viewResourceId, ArrayList<String> items)
+    public TextAdapter(Context context, int viewResourceId, ArrayList<Spanned> items)
     {
     	super(context, viewResourceId, items);
     	this.context = context;
         this.items = items;
-        this.itemsAll = (ArrayList<String>) items.clone();
-        this.suggestions = new ArrayList<String>();
+        this.itemsAll = (ArrayList<Spanned>) items.clone();
+        this.suggestions = new ArrayList<Spanned>();
     }
     
     public static class ViewHolder
@@ -49,7 +50,7 @@ public class TextAdapter extends ArrayAdapter<String> {
             holder = (ViewHolder)v.getTag();
         }
  
-        final String item = items.get(position);
+        final String item = (items.get(position)).toString();
         if (item != null)
         {
             holder.item1.setText(item.trim());
@@ -68,7 +69,7 @@ public class TextAdapter extends ArrayAdapter<String> {
     {
         public String convertResultToString(Object resultValue)
         {
-            String str = (String) (resultValue);
+            String str = ((Spanned) (resultValue)).toString();
             return str;
         }
 
@@ -79,11 +80,12 @@ public class TextAdapter extends ArrayAdapter<String> {
             if (constraint != null)
             {
                 suggestions.clear();
-                for (String file : itemsAll)
+                for (int i = 0, j = 0; i < itemsAll.size() && j <= 10; i++)
                 {
-                    if (file.toString().toLowerCase().contains(constraint.toString().toLowerCase()))
+                    if (itemsAll.get(i).toString().toLowerCase().contains(constraint.toString().toLowerCase()))
                     {
-                        suggestions.add(file);
+                        j++;
+                    	suggestions.add(itemsAll.get(i));
                     }
                 }
                 FilterResults filterResults = new FilterResults();
@@ -101,11 +103,11 @@ public class TextAdapter extends ArrayAdapter<String> {
         protected void publishResults(CharSequence constraint, FilterResults results)
         {
             @SuppressWarnings("unchecked")
-            ArrayList<String> filteredList = (ArrayList<String>) results.values;
+            ArrayList<Spanned> filteredList = (ArrayList<Spanned>) results.values;
             if (results != null && results.count > 0)
             {
                 clear();
-                for (String c : filteredList)
+                for (Spanned c : filteredList)
                 {
                     add(c);
                 }

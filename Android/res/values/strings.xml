@@ -10,20 +10,52 @@
         Please wait while we rebuild your personal Weiss Schwarz database (or do something else on your phone).</string>
     
     <!-- Main page material -->
+	<string name="characters">Characters\n</string>
+	<string name="stats">Stats\nOverview</string>
+	<string name="more_stats">Play Counts\n</string>
+	<string name="about">About\n(Read me!)</string>
+	
+	<!-- Overview material -->
+	<string name="character_title">Character Rankings</string>
+	<string name="top10_title">Top 10 Sound Bites</string>
+    
+    <!-- Characters page material -->
 	<string name="claptrap">Claptrap\n</string>
 	<string name="mister_torgue">Mister\nTorgue</string>
 	<string name="moxxi">Moxxi\n</string>
 	<string name="tiny_tina">Tiny Tina\n</string>
 	<string name="sir_hammerlock">Sir\nHammerlock</string>
-	<string name="random_file">Random\nSound</string>
+	<string name="handsome_jack">Handsome\nJack</string>
 	<string name="CLAPPAY">Claptrap goin\' HAM.</string>
-	<string name="hints_title">Quick Hints</string>
-	<string name="hints">- Hold/long click on a file to set it as your ringtone.\n- Search for nothing to bring back full lists of files.</string>
+	    				 
+	<!-- About -->
+	<string name="about_text">Hello fellow Vault Hunter and thank you for downloading 
+	    				 my Borderlands 2 soundboard! Before you delve into the wonderful audio 
+	    				 world of Pandora, here are some quick tips to help you use 
+	    				 this app:\n\n
+	    				 - When you\'re on a character\'s page or the all characters page, 
+	    				 the single note icon in the action bar acts as a \"random\" button. 
+	    				 So when you\'re on the all characters page, hitting that button will 
+	    				 play a random audio bite from our entire library while using it on 
+	    				 a specific character\'s page will play a file from that character.
+	    				 \n\n- Hold/long click on a file to set it as your ringtone
+	    				 \n\n- Search for nothing to bring back full lists of files
+	    				 \n\n- If you go to the \"Stats\" page, you\'ll see that you have a rank based on how 
+	    				 much you\'ve used this app. Because I\'m evil, it\'s up to you to figure out 
+	    				 the number of ranks I\'ve created and how to reach each one. Happy playing!
+	    				 \n\nAnd that\'s it! Now Claptrap commands you to leave a rating/review to help 
+	    				 out a poor full-time college student who hacks together free, ad-less 
+	    				 Android apps in his spare time.
+	    				 \n\nIf you super care about when the next updates are coming for my apps, feel 
+	    				 free to check out my derpy blog here: http://alexsdevblog.blogspot.com/
+	    				 </string>
 	
 	<!-- Results Page -->
 	<string name="search">Search</string>
 	
 	<!-- Action Bar -->
 	<string name="silence">Silence</string>
+	<string name="random">Random File</string>
+	<string name="refresh">Refresh List</string>
 
 </resources>

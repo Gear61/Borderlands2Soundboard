@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,19 +32,23 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -53,10 +59,11 @@ public class MainActivity extends Activity
 	private int prg = 0;
 	private TextView tv;
 	private ProgressBar pb;
-	private static String currentCharacter;
-	
+	private static String currentCharacter = "";
+	private int lastKnownPlayCount = 0;
 	MediaPlayer player = new MediaPlayer();
 	Map<String, ArrayList<Spanned>> cache = new HashMap<String, ArrayList<Spanned>>();
+	ArrayList<Spanned> allTheStats = null;
 	
 	private int fileSize = 0;
 	final public int getFileSize()
@@ -401,9 +408,13 @@ public class MainActivity extends Activity
 			{
 				player.reset();
 				AssetFileDescriptor afd = null;
+				String fileName = ((Spanned) parent.getItemAtPosition(position)).toString().trim();
+				String file = currentCharacter + "/" + fileName + ".mp3";
+				
+				AudioFile tempFile = new AudioFile(fileName, currentCharacter);
+				datasource.updateCount(tempFile, context);
 				try
 				{
-					String file = currentCharacter + "/" + ((Spanned) parent.getItemAtPosition(position)).toString().trim() + ".mp3";
 					afd = getAssets().openFd(file);
 				}
 				catch (IOException e)
@@ -450,18 +461,184 @@ public class MainActivity extends Activity
 				+ "</b>. Simply click on a file to hear it.";
 		list_message.setText(Html.fromHtml(stats));
 		
-		// Set up auto-complete
-		ArrayList<String> damnit = new ArrayList<String>();
-		for (int i = 0; i < fileList.size(); i++)
-		{
-			damnit.add(fileList.get(i).toString());
-		}
-		
 		AutoCompleteTextView cardSearch = (AutoCompleteTextView)findViewById(R.id.search_box);
-		TextAdapter adapter = new TextAdapter(context, android.R.layout.simple_dropdown_item_1line, damnit);
+		@SuppressWarnings("unchecked")
+		TextAdapter adapter = new TextAdapter(context, android.R.layout.simple_dropdown_item_1line,
+											  (ArrayList<Spanned>) fileList.clone());
 		cardSearch.setAdapter(adapter);
 	}
 	
+	// MOVING AROUND FUNCTIONS
+	public void allChars (View view)
+	{
+		setContentView(R.layout.characters);
+		currentCharacter = "All Chars";
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		invalidateOptionsMenu();
+	}
+	
+	public void about (View view)
+	{
+		setContentView(R.layout.about);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+	
+	public void createRow(TableLayout table, String first, String second, String third, boolean bold)
+	{
+		TableLayout.LayoutParams params1 = new TableLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.1f);
+		params1.setMargins(10, 0, 10, 0); // Left, top, right, bottom
+		
+		TableLayout.LayoutParams params2 = new TableLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.08f);
+		params2.setMargins(10, 0, 10, 0); // Left, top, right, bottom
+		
+		TextView text = new TextView(this);
+        text.setText(first);
+        text.setLayoutParams(params2);
+        
+        TextView text2 = new TextView(this);
+        text2.setText(second);
+        text2.setLayoutParams(params1);
+        
+        TextView text3 = new TextView(this);
+        text3.setText(third);
+        text3.setLayoutParams(params1);
+        
+        if (bold)
+        {
+	        text.setTypeface(null, Typeface.BOLD);
+	        text2.setTypeface(null, Typeface.BOLD);
+	        text3.setTypeface(null, Typeface.BOLD);
+        }
+        
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.addView(text);
+        layout.addView(text2);
+        layout.addView(text3);
+		
+		// add the TableRow to the TableLayout
+		table.addView(layout);
+	}
+	
+	public void goToOverview (View view)
+	{
+		setContentView(R.layout.overview);
+		// Set up ranking
+		Ranking myRanking = datasource.getRanking();
+		TextView ranking = (TextView) findViewById(R.id.ranking);
+		String report = "<b>Total Plays: </b>" + myRanking.getTotalPlays() + "<br>";
+		report += "<b>Rank: </b>" + myRanking.getRank();
+		ranking.setText(Html.fromHtml(report));
+		
+		// Set up character by plays
+		HashMap<String, Integer> listByPlays = datasource.getCharPlays();
+		ArrayList<Ranking> rankings = new ArrayList<Ranking>();
+		
+		rankings.add(new Ranking("Claptrap", listByPlays.get("Claptrap")));
+		rankings.add(new Ranking("Mister Torgue", listByPlays.get("Mister Torgue")));
+		rankings.add(new Ranking("Moxxi", listByPlays.get("Moxxi")));
+		rankings.add(new Ranking("Tiny Tina", listByPlays.get("Tiny Tina")));
+		rankings.add(new Ranking("Sir Hammerlock", listByPlays.get("Sir Hammerlock")));
+		rankings.add(new Ranking("Handsome Jack", listByPlays.get("Handsome Jack")));
+		
+		Collections.sort(rankings, new Comparator<Ranking>()
+		{
+		    public int compare(Ranking o1, Ranking o2)
+		    {
+		        if (o1.getTotalPlays() > o2.getTotalPlays())
+		        {
+		        	return -1;
+		        }
+		        else if (o1.getTotalPlays() < o2.getTotalPlays())
+		        {
+		        	return 1;
+		        }
+		        return 0;
+		    }
+		});
+		
+		TextView characterList = (TextView) findViewById(R.id.character_rankings);
+		TextView characterPlays = (TextView) findViewById(R.id.character_plays);
+		String charList = "<b>Character</b><br>1. " + rankings.get(0).getRank() + "<br>2. " + rankings.get(1).getRank()
+						  + "<br>3. " + rankings.get(2).getRank() + "<br>4. " + rankings.get(3).getRank()
+						  + "<br>5. " + rankings.get(4).getRank() + "<br>6. " + rankings.get(5).getRank();
+		String charPlays = "<b># of Plays	</b>" + rankings.get(0).getTotalPlays() + "<br>" + rankings.get(1).getTotalPlays()
+						   + "<br>" + rankings.get(2).getTotalPlays()+ "<br>" + rankings.get(3).getTotalPlays()
+						   + "<br>" + rankings.get(4).getTotalPlays()+ "<br>" + rankings.get(5).getTotalPlays();
+		
+		characterList.setText(Html.fromHtml(charList));
+		characterPlays.setText(Html.fromHtml(charPlays));
+		
+		// Set up Top 10; get a reference for the TableLayout
+		TableLayout table = (TableLayout) findViewById(R.id.my_table_layout);
+		createRow(table, "Quote", "Character", "# of Plays", true);
+		
+		Cursor cursor = datasource.getTopTen();
+		int i = 0;
+		for(i = 0; cursor.moveToNext(); i++)
+		{
+			createRow(table, (i+1) + ". " + cursor.getString(0), cursor.getString(1).replace("_", " "),
+					  Integer.toString(cursor.getInt(2)), false);
+		}
+		
+		if (i < 10)
+		{
+			TextView complain = (TextView) findViewById(R.id.complain);
+			complain.setText("Your Top 10 looks a little... empty there buddy.");
+		}
+		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+	
+	public void moreStats (View view)
+	{
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		setContentView(R.layout.playcounts);
+		
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		TextView title = (TextView) findViewById(R.id.title_play);
+		title.setText("Play Counts");
+		int currentPlayCount = datasource.getRanking().getTotalPlays();
+		
+		final ListView listview = (ListView) findViewById(R.id.playResults);
+
+		// clear previous results in the LV
+		listview.setAdapter(null);
+		
+		// If we haven't loaded this character's list before, create it and add it to the hashmap
+		if (allTheStats == null || lastKnownPlayCount != currentPlayCount)
+		{
+			allTheStats = new ArrayList<Spanned> ();
+				
+			// Get all sound bites associated with character
+			String[] columns = {MySQLiteHelper.COLUMN_NAME, MySQLiteHelper.COLUMN_CHARACTER};
+			Cursor cursor = datasource.execQuery(columns, null, null, null, null, null);
+			while(cursor.moveToNext())
+			{
+				String addition = "<b>Quote: </b>" + cursor.getString(0) + "<br>";
+				addition += "<b>Character: </b>" + cursor.getString(1).replace("_", " ") + "<br>";
+				int playCount = datasource.getCount(new AudioFile(cursor.getString(0), cursor.getString(1)));
+				addition += "<b># of Plays: </b>" + playCount;
+				allTheStats.add(Html.fromHtml(addition));
+			}
+			lastKnownPlayCount = datasource.getRanking().getTotalPlays();
+		}
+		
+		FileAdapter lvAdapter = new FileAdapter(context, allTheStats);
+		listview.setAdapter(lvAdapter);
+		
+		TextView list_message = (TextView) findViewById(R.id.message_play);
+		String stats = "To be honest, this is just here because I wanted a 4th feature but had no good ideas. :/";
+		list_message.setText(Html.fromHtml(stats));
+		
+		AutoCompleteTextView cardSearch = (AutoCompleteTextView)findViewById(R.id.search_plays);
+		@SuppressWarnings("unchecked")
+		TextAdapter adapter = new TextAdapter(context, android.R.layout.simple_dropdown_item_1line,
+											  (ArrayList<Spanned>) allTheStats.clone());
+		cardSearch.setAdapter(adapter);
+	}
+	
+	// LIST PREPARATION
 	public void prepareClaptrap (View view)
 	{
 		currentCharacter = "Claptrap";
@@ -492,12 +669,31 @@ public class MainActivity extends Activity
 		setUpAudioList();
 	}
 	
-	public void randomFile (View view) throws IOException
-	{	
-		Cursor cursor = datasource.execQuery(null, null, null, null, null, "RANDOM() LIMIT 1");
+	public void prepareHandsomeJack (View view)
+	{
+		currentCharacter = "Handsome_Jack";
+		setUpAudioList();
+	}
+	
+	public void randomFile () throws IOException
+	{
+		String columns[] = {MySQLiteHelper.COLUMN_NAME, MySQLiteHelper.COLUMN_CHARACTER};
+		String selection = null;
+		String selectionArgs[] = null;
+		if (!currentCharacter.equals("All Chars"))
+		{
+			selection = MySQLiteHelper.COLUMN_CHARACTER + " = ?";
+			selectionArgs = new String[] {currentCharacter};
+		}
+		Cursor cursor = datasource.execQuery(columns, selection, selectionArgs, null, null, "RANDOM() LIMIT 1");
+		
 		String file = "";
 		if (cursor.moveToNext())
 		{
+			// Update count
+			AudioFile tempFile = new AudioFile(cursor.getString(0), cursor.getString(1));
+			datasource.updateCount(tempFile, context);
+			
 			file = cursor.getString(1) + "/" + cursor.getString(0).trim() + ".mp3";
 		}
 		else
@@ -511,6 +707,50 @@ public class MainActivity extends Activity
 		player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
 		player.prepare();
 		player.start();
+	}
+	
+	@SuppressLint("DefaultLocale")
+	public void narrowCounts(View view)
+	{
+		killKeyboard();
+		
+		// Grab listview
+		final ListView listview = (ListView) findViewById(R.id.playResults);
+		// clear previous results in the LV
+		listview.setAdapter(null);
+		
+		// Get contents of textbox. Check it
+		EditText criteria = (EditText) findViewById(R.id.search_plays);
+		String input = criteria.getText().toString().toLowerCase();
+		
+		ArrayList<Spanned> fileList = new ArrayList<Spanned>();
+		for (int i = 0; i < allTheStats.size(); i++)
+		{
+			if (allTheStats.get(i).toString().toLowerCase().contains(input))
+			{
+				fileList.add(allTheStats.get(i));
+			}
+		}
+		
+		FileAdapter lvAdapter = new FileAdapter(context, fileList);
+		listview.setAdapter(lvAdapter);
+		
+		TextView list_message = (TextView) findViewById(R.id.message_play);
+		String stats;
+		if (fileList.size() == 0)
+		{
+			stats = "No audio files were found for your given search criteria.";
+		}
+		else if (input.trim().equals(""))
+		{
+			stats = "This app currently has <b>" + fileList.size() + "</b> sound bites";
+		}
+		else
+		{
+			stats = Integer.toString(fileList.size()) + " audio files were found for your given parameters.";
+		}
+		list_message.setText(Html.fromHtml(stats));
+		criteria.setText("");
 	}
 	
 	public void narrowResults(View view)
@@ -567,6 +807,22 @@ public class MainActivity extends Activity
 		return true;
 	}
 	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		MenuItem random = menu.findItem(R.id.random);
+		if (!currentCharacter.equals(""))
+		{
+			random.setVisible(true);
+		}
+		else
+		{
+			random.setVisible(false);
+		}
+		super.onPrepareOptionsMenu(menu);
+		return true;
+	}
+	
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch (item.getItemId())
@@ -574,15 +830,37 @@ public class MainActivity extends Activity
 			// I use the home button as a derpy back button
 			case android.R.id.home:
 				killKeyboard();
-				setContentView(R.layout.activity_main);
-				getActionBar().setDisplayHomeAsUpEnabled(false);
+				if (currentCharacter.equals("") || currentCharacter.equals("All Chars"))
+				{
+					currentCharacter = "";
+					setContentView(R.layout.activity_main);
+					getActionBar().setDisplayHomeAsUpEnabled(false);
+				}
+				// We're on a character page
+				else
+				{
+					killKeyboard();
+					currentCharacter = "All Chars";
+					setContentView(R.layout.characters);
+				}
 				break;
 			case R.id.silence:
 				player.stop();
 				break;
+			case R.id.random:
+				try
+				{
+					randomFile();
+				}
+				catch (IOException e)
+				{
+					Util.showDialog("The random button failed.", context);
+				}
+				break;
 			default:
 				break;
 		}
+		invalidateOptionsMenu();
 		return super.onOptionsItemSelected(item);
 	}
 }

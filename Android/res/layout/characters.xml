@@ -1,0 +1,112 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+	    
+	    <LinearLayout
+	        android:id="@+id/godLayout"
+	        android:layout_marginTop="30dp"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:orientation="horizontal" >
+	
+		    <LinearLayout
+		        android:id="@+id/linlayout1"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:gravity="center"
+		        android:layout_marginRight="20dp"
+		        android:orientation="vertical" >
+		
+		        <Button
+		            android:id="@+id/claptrap"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/claptrap_icon"
+		            android:onClick="prepareClaptrap"
+		            android:text="@string/claptrap"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		
+		        <Button
+		            android:id="@+id/moxxi"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/moxxi"
+		            android:onClick="prepareMoxxi"
+		            android:text="@string/moxxi"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		        
+		        <Button
+		            android:id="@+id/sir_hammerlock"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/sir_hammerlock"
+		            android:onClick="prepareHammerlock"
+		            android:text="@string/sir_hammerlock"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		    </LinearLayout>
+		
+		    <LinearLayout
+		        android:id="@+id/linlayout2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:gravity="center"
+		        android:layout_marginLeft="20dp"
+		        android:orientation="vertical" >
+		
+		        <Button
+		            android:id="@+id/mister_torgue"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/mistertorgue"
+		            android:onClick="prepareTorgue"
+		            android:text="@string/mister_torgue"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		
+		        <Button
+		            android:id="@+id/tiny_tina"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/tinytina"
+		            android:onClick="prepareTina"
+		            android:text="@string/tiny_tina"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		        
+		        <Button
+		            android:id="@+id/random"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/handsomejack"
+		            android:onClick="prepareHandsomeJack"
+		            android:text="@string/handsome_jack"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		    </LinearLayout>
+	    </LinearLayout>
+</ScrollView>

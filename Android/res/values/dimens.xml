@@ -5,5 +5,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="abs__action_bar_subtitle_text_size">14dp</dimen>
     <dimen name="title">24dp</dimen>
+    <dimen name="ranking">18dp</dimen>
 
 </resources>

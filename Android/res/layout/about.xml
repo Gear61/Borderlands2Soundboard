@@ -1,0 +1,19 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    
+		        <TextView
+		            android:id="@+id/about"
+		            android:paddingTop="15sp"
+		            android:paddingRight="15sp"
+		            android:paddingLeft="15sp"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:text="@string/about_text"
+		            android:autoLink="web"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size"
+		        />
+</ScrollView>

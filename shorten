@@ -1,3 +1,2 @@
-cd temp
-rename 's/Hammerlock- //' *
+cd $1
 rename 's/^(.{75}).*(\..*)$/$1$2/' *
