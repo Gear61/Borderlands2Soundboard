@@ -101,7 +101,6 @@ public class AudioFileDataSource
 		if (cursor.moveToFirst())
 		{
 			int currentCount = cursor.getInt(0);
-			System.out.println(currentCount);
 			// Update current play count
 			String strFilter = MySQLiteHelper.COLUMN_NAME + " = \"" + file.getName()
 							   + "\" AND " + MySQLiteHelper.COLUMN_CHARACTER + " = \"" +
@@ -122,6 +121,7 @@ public class AudioFileDataSource
 		{
 			Util.showDialog(congrats, context);
 		}
+		cursor.close();
 		close();
 	}
 	
@@ -143,10 +143,13 @@ public class AudioFileDataSource
 		
 		if (cursor.moveToFirst())
 		{
-			return cursor.getInt(0);
+			int count = cursor.getInt(0);
+			cursor.close();
+			return count;
 		}
 		else
 		{
+			cursor.close();
 			return 0;
 		}
 	}
@@ -169,6 +172,7 @@ public class AudioFileDataSource
 		{
 			sum += cursor.getInt(0);
 		}
+		cursor.close();
 		return sum;
 	}
 	
@@ -233,6 +237,7 @@ public class AudioFileDataSource
 		{
 			ranking = "MUTHAFUCKIN' SUPA SAIYAN YO";
 		}
+		cursor.close();
 		return new Ranking (ranking, sum);
 	}
 	

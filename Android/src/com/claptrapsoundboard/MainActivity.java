@@ -63,7 +63,7 @@ public class MainActivity extends Activity
 	private int lastKnownPlayCount = 0;
 	MediaPlayer player = new MediaPlayer();
 	Map<String, ArrayList<Spanned>> cache = new HashMap<String, ArrayList<Spanned>>();
-	ArrayList<Spanned> allTheStats = null;
+	ArrayList<Spanned> allTheStats = new ArrayList<Spanned> ();
 	
 	private int fileSize = 0;
 	final public int getFileSize()
@@ -252,6 +252,7 @@ public class MainActivity extends Activity
 		Cursor cursor = datasource.execQuery(columns, null, null, null, null, null);
 		cursor.moveToFirst();
 		int dbSize = cursor.getInt(0);
+		cursor.close();
 
 		// Get number of cards represented in audio files
 		try
@@ -396,6 +397,7 @@ public class MainActivity extends Activity
 				fileList.add(Html.fromHtml(cursor.getString(0)));
 			}
 			cache.put(currentCharacter, fileList);
+			cursor.close();
 		}
 		
 		FileAdapter lvAdapter = new FileAdapter(context, fileList);
@@ -580,6 +582,7 @@ public class MainActivity extends Activity
 			createRow(table, (i+1) + ". " + cursor.getString(0), cursor.getString(1).replace("_", " "),
 					  Integer.toString(cursor.getInt(2)), false);
 		}
+		cursor.close();
 		
 		if (i < 10)
 		{
@@ -605,12 +608,11 @@ public class MainActivity extends Activity
 		// clear previous results in the LV
 		listview.setAdapter(null);
 		
-		// If we haven't loaded this character's list before, create it and add it to the hashmap
-		if (allTheStats == null || lastKnownPlayCount != currentPlayCount)
+		if (allTheStats.size() == 0 || lastKnownPlayCount != currentPlayCount)
 		{
-			allTheStats = new ArrayList<Spanned> ();
-				
-			// Get all sound bites associated with character
+			allTheStats.clear();
+			
+			datasource.open();
 			String[] columns = {MySQLiteHelper.COLUMN_NAME, MySQLiteHelper.COLUMN_CHARACTER};
 			Cursor cursor = datasource.execQuery(columns, null, null, null, null, null);
 			while(cursor.moveToNext())
@@ -622,6 +624,7 @@ public class MainActivity extends Activity
 				allTheStats.add(Html.fromHtml(addition));
 			}
 			lastKnownPlayCount = datasource.getRanking().getTotalPlays();
+			cursor.close();
 		}
 		
 		FileAdapter lvAdapter = new FileAdapter(context, allTheStats);
@@ -699,8 +702,10 @@ public class MainActivity extends Activity
 		else
 		{
 			Util.showDialog("Random soundbite functionality failed.", context);
+			cursor.close();
 			return;
 		}
+		cursor.close();
 		player.reset();
 		AssetFileDescriptor afd = null;
 		afd = getAssets().openFd(file);
@@ -776,6 +781,7 @@ public class MainActivity extends Activity
 		{
 			fileList.add(Html.fromHtml(cursor.getString(0)));
 		}
+		cursor.close();
 		
 		FileAdapter lvAdapter = new FileAdapter(context, fileList);
 		listview.setAdapter(lvAdapter);
