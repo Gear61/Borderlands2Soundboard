@@ -7,13 +7,115 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.text.Html;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TextView;
 
 public class Util
 {
+	public static String addS(int size)
+	{
+		if (size == 1) {return "";}
+		return "s";
+	}
+	
+	public static String verb(int size)
+	{
+		if (size == 1) {return "was";}
+		return "were";
+	}
+	
+	public static void createCharRow(TableLayout table, String first, String second,
+									 String third, String fourth, boolean bold, Context context)
+	{
+		TableLayout.LayoutParams params1 = new TableLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.1f);
+		params1.setMargins(10, 0, 10, 0); // Left, top, right, bottom
+		
+		TableLayout.LayoutParams params2 = new TableLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.15f);
+		params2.setMargins(10, 0, 10, 0); // Left, top, right, bottom
+		
+		TableLayout.LayoutParams params3 = new TableLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.13f);
+		params2.setMargins(10, 0, 10, 0); // Left, top, right, bottom
+		
+		TableLayout.LayoutParams params4 = new TableLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.14f);
+		params2.setMargins(10, 0, 10, 0); // Left, top, right, bottom
+		
+		TextView text = new TextView(context);
+        text.setText(first);
+        text.setLayoutParams(params4);
+        
+        TextView text2 = new TextView(context);
+        text2.setText(second);
+        text2.setLayoutParams(params1);
+        
+        TextView text3 = new TextView(context);
+        text3.setText(third);
+        text3.setLayoutParams(params3);
+        
+        TextView text4 = new TextView(context);
+        text4.setText(fourth);
+        text4.setLayoutParams(params2);
+        
+        if (bold)
+        {
+	        text2.setTypeface(null, Typeface.BOLD);
+	        text3.setTypeface(null, Typeface.BOLD);
+        }
+        
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.addView(text);
+        layout.addView(text2);
+        layout.addView(text3);
+        layout.addView(text4);
+		
+		// add the TableRow to the TableLayout
+		table.addView(layout);
+	}
+	
+	public static void createRow(TableLayout table, String first, String second, String third, boolean bold, Context context)
+	{
+		TableLayout.LayoutParams params1 = new TableLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.1f);
+		params1.setMargins(10, 0, 10, 0); // Left, top, right, bottom
+		
+		TableLayout.LayoutParams params2 = new TableLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.08f);
+		params2.setMargins(10, 0, 10, 0); // Left, top, right, bottom
+		
+		TextView text = new TextView(context);
+        text.setText(first);
+        text.setLayoutParams(params2);
+        
+        TextView text2 = new TextView(context);
+        text2.setText(second);
+        text2.setLayoutParams(params1);
+        
+        TextView text3 = new TextView(context);
+        text3.setText(third);
+        text3.setLayoutParams(params1);
+        
+        if (bold)
+        {
+	        text.setTypeface(null, Typeface.BOLD);
+	        text2.setTypeface(null, Typeface.BOLD);
+	        text3.setTypeface(null, Typeface.BOLD);
+        }
+        
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.addView(text);
+        layout.addView(text2);
+        layout.addView(text3);
+		
+		// add the TableRow to the TableLayout
+		table.addView(layout);
+	}
+	
 	public static String createCharList (ArrayList<Ranking> rankings)
 	{
-		String charList = "<b>Character</b>";
+		String charList = "Character";
 		for (int i = 0; i < rankings.size(); i++)
 		{
 			charList += "<br>" + (i+1) + ". " + rankings.get(i).getRank();
@@ -23,14 +125,9 @@ public class Util
 	
 	public static String createCharPlays (ArrayList<Ranking> rankings)
 	{
-		String charPlays = "<b># of Plays</b><br>";
+		String charPlays = "# of Plays";
 		for (int i = 0; i < rankings.size(); i++)
 		{
-			if (i == 0)
-			{
-				charPlays += rankings.get(i).getTotalPlays();
-				continue;
-			}
 			charPlays += "<br>" + rankings.get(i).getTotalPlays();
 		}
 		return charPlays;

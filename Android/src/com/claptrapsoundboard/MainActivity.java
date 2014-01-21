@@ -567,23 +567,31 @@ public class MainActivity extends Activity
 		    }
 		});
 		
-		TextView characterList = (TextView) findViewById(R.id.character_rankings);
-		TextView characterPlays = (TextView) findViewById(R.id.character_plays);
-		String charList = Util.createCharList(rankings);
-		String charPlays = Util.createCharPlays(rankings);
-		characterList.setText(Html.fromHtml(charList));
-		characterPlays.setText(Html.fromHtml(charPlays));
+		TableLayout charTable = (TableLayout) findViewById(R.id.character_layout);
+		String charList[] = Util.createCharList(rankings).split("<br>");
+		String charPlays[] = Util.createCharPlays(rankings).split("<br>");
+		for (int i = 0; i < charList.length; i++)
+		{
+			if (i == 0)
+			{
+				Util.createCharRow(charTable, "", charList[i], charPlays[i], "", true, context);
+			}
+			else
+			{
+				Util.createCharRow(charTable, "", charList[i], charPlays[i], "", false, context);
+			}
+		}
 		
 		// Set up Top 10; get a reference for the TableLayout
 		TableLayout table = (TableLayout) findViewById(R.id.my_table_layout);
-		createRow(table, "Quote", "Character", "# of Plays", true);
+		Util.createRow(table, "Quote", "Character", "# of Plays", true, context);
 		
 		Cursor cursor = datasource.getTopTen();
 		int i = 0;
 		for(i = 0; cursor.moveToNext(); i++)
 		{
-			createRow(table, (i+1) + ". " + cursor.getString(0), cursor.getString(1).replace("_", " "),
-					  Integer.toString(cursor.getInt(2)), false);
+			Util.createRow(table, (i+1) + ". " + cursor.getString(0), cursor.getString(1).replace("_", " "),
+					  Integer.toString(cursor.getInt(2)), false, context);
 		}
 		cursor.close();
 		
@@ -843,12 +851,13 @@ public class MainActivity extends Activity
 		}
 		else if (quoteName.trim().equals(""))
 		{
-			stats = "This app currently has " + fileList.size() + " sound bites associated with <b>" + currentCharacter.replace("_", " ")
+			stats = "This app currently has <b>" + fileList.size() + "</b> sound bites associated with <b>" + currentCharacter.replace("_", " ")
 					+ "</b>.";
 		}
 		else
 		{
-			stats = Integer.toString(fileList.size()) + " audio files were found for your given parameters.";
+			stats = "<b>" + Integer.toString(fileList.size()) + "</b> audio file" +
+				    Util.addS(fileList.size()) + " " + Util.verb(fileList.size()) + " found for your given parameters.";
 		}
 		list_message.setText(Html.fromHtml(stats));
 		criteria.setText("");

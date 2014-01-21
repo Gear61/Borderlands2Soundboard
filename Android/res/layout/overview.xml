@@ -29,50 +29,25 @@
 	        android:textSize="@dimen/ranking"
 	        android:textStyle="bold"/>
 	    
-	    <RelativeLayout
-	        android:id="@+id/godLayout"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:paddingTop="5dp"
-	        android:layout_centerHorizontal="true"
-	        android:layout_below="@+id/character_title">
-	        
-	        <LinearLayout
-	            android:id="@+id/char_column"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:orientation="vertical"
-		        android:layout_marginRight="10dp"
-		        android:layout_marginLeft="25dp">
-	
-			    <TextView
-			        android:id="@+id/character_rankings"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content">
-			    </TextView>
-		    
-		    </LinearLayout>
-		
-	        <LinearLayout
-	            android:id="@+id/plays_col"
-	            android:layout_toRightOf="@+id/char_column"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:orientation="vertical">
-			    
-			    <TextView
-			        android:id="@+id/character_plays"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content">
-			    </TextView>
-		    </LinearLayout>
-	    </RelativeLayout>
+	    <TableLayout
+            android:id="@+id/character_layout"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/character_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="4">
+            </TableRow>
+        </TableLayout>
 	    
 	    <TextView
 	        android:id="@+id/complain"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_below="@+id/godLayout"
+	        android:layout_below="@+id/character_layout"
 	        android:layout_centerHorizontal="true"
 	        android:layout_marginTop="5dp"
 	        android:textSize="12sp" />
