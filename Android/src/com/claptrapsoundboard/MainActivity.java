@@ -493,43 +493,6 @@ public class MainActivity extends Activity
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
-	public void createRow(TableLayout table, String first, String second, String third, boolean bold)
-	{
-		TableLayout.LayoutParams params1 = new TableLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.1f);
-		params1.setMargins(10, 0, 10, 0); // Left, top, right, bottom
-		
-		TableLayout.LayoutParams params2 = new TableLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.08f);
-		params2.setMargins(10, 0, 10, 0); // Left, top, right, bottom
-		
-		TextView text = new TextView(this);
-        text.setText(first);
-        text.setLayoutParams(params2);
-        
-        TextView text2 = new TextView(this);
-        text2.setText(second);
-        text2.setLayoutParams(params1);
-        
-        TextView text3 = new TextView(this);
-        text3.setText(third);
-        text3.setLayoutParams(params1);
-        
-        if (bold)
-        {
-	        text.setTypeface(null, Typeface.BOLD);
-	        text2.setTypeface(null, Typeface.BOLD);
-	        text3.setTypeface(null, Typeface.BOLD);
-        }
-        
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.addView(text);
-        layout.addView(text2);
-        layout.addView(text3);
-		
-		// add the TableRow to the TableLayout
-		table.addView(layout);
-	}
-	
 	public void goToOverview (View view)
 	{
 		setContentView(R.layout.overview);
@@ -769,50 +732,6 @@ public class MainActivity extends Activity
 		player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
 		player.prepare();
 		player.start();
-	}
-	
-	@SuppressLint("DefaultLocale")
-	public void narrowCounts(View view)
-	{
-		killKeyboard();
-		
-		// Grab listview
-		final ListView listview = (ListView) findViewById(R.id.playResults);
-		// clear previous results in the LV
-		listview.setAdapter(null);
-		
-		// Get contents of textbox. Check it
-		EditText criteria = (EditText) findViewById(R.id.search_plays);
-		String input = criteria.getText().toString().toLowerCase();
-		
-		ArrayList<Spanned> fileList = new ArrayList<Spanned>();
-		for (int i = 0; i < allTheStats.size(); i++)
-		{
-			if (allTheStats.get(i).toString().toLowerCase().contains(input))
-			{
-				fileList.add(allTheStats.get(i));
-			}
-		}
-		
-		FileAdapter lvAdapter = new FileAdapter(context, fileList);
-		listview.setAdapter(lvAdapter);
-		
-		TextView list_message = (TextView) findViewById(R.id.message_play);
-		String stats;
-		if (fileList.size() == 0)
-		{
-			stats = "No audio files were found for your given search criteria.";
-		}
-		else if (input.trim().equals(""))
-		{
-			stats = "This app currently has <b>" + fileList.size() + "</b> sound bites";
-		}
-		else
-		{
-			stats = Integer.toString(fileList.size()) + " audio files were found for your given parameters.";
-		}
-		list_message.setText(Html.fromHtml(stats));
-		criteria.setText("");
 	}
 	
 	public void narrowResults(View view)
