@@ -244,12 +244,11 @@ public class AudioFileDataSource
 	public HashMap<String, Integer> getCharPlays()
 	{
 		HashMap<String, Integer> playCounts = new HashMap<String, Integer>();
-		playCounts.put("Claptrap", getPlaysByCharacter("Claptrap"));
-		playCounts.put("Mister Torgue", getPlaysByCharacter("Mister_Torgue"));
-		playCounts.put("Moxxi", getPlaysByCharacter("Moxxi"));
-		playCounts.put("Tiny Tina", getPlaysByCharacter("Tiny_Tina"));
-		playCounts.put("Sir Hammerlock", getPlaysByCharacter("Sir_Hammerlock"));
-		playCounts.put("Handsome Jack", getPlaysByCharacter("Handsome_Jack"));
+		for (int i = 0; i < Util.allCharacters.length; i++)
+		{
+			playCounts.put(Util.allCharacters[i],
+						   getPlaysByCharacter(Util.allCharacters[i].replace(" ", "_")));
+		}
 		return playCounts;
 	}
 

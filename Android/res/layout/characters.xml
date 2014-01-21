@@ -7,7 +7,7 @@
 	    
 	    <LinearLayout
 	        android:id="@+id/godLayout"
-	        android:layout_marginTop="30dp"
+	        android:layout_marginTop="10dp"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:gravity="center"
@@ -20,6 +20,19 @@
 		        android:gravity="center"
 		        android:layout_marginRight="20dp"
 		        android:orientation="vertical" >
+		        
+		        <Button
+		            android:id="@+id/vaulthunters"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/vaulthunters"
+		            android:onClick="prepareVaultHunters"
+		            android:text="@string/vault_hunters"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
 		
 		        <Button
 		            android:id="@+id/claptrap"
@@ -68,6 +81,19 @@
 		        android:gravity="center"
 		        android:layout_marginLeft="20dp"
 		        android:orientation="vertical" >
+		        
+		        <Button
+		            android:id="@+id/scooter"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/scooter"
+		            android:onClick="prepareScooter"
+		            android:text="@string/scooter"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
 		
 		        <Button
 		            android:id="@+id/mister_torgue"

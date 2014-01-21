@@ -1,0 +1,113 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+	    
+	    <LinearLayout
+	        android:id="@+id/godLayout"
+	        android:layout_marginTop="30dp"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:orientation="horizontal" >
+	
+		    <LinearLayout
+		        android:id="@+id/linlayout1"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:gravity="center"
+		        android:layout_marginRight="20dp"
+		        android:orientation="vertical" >
+		        
+		        <Button
+		            android:id="@+id/Axton"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/axton"
+		            android:onClick="prepareAxton"
+		            android:text="@string/axton"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		
+		        <Button
+		            android:id="@+id/Maya"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/maya"
+		            android:onClick="prepareMaya"
+		            android:text="@string/maya"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		
+		        <Button
+		            android:id="@+id/Gaige"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/gaige"
+		            android:onClick="prepareGaige"
+		            android:text="@string/gaige"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		    
+		    </LinearLayout>
+		
+		    <LinearLayout
+		        android:id="@+id/linlayout2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:gravity="center"
+		        android:layout_marginLeft="20dp"
+		        android:orientation="vertical" >
+		        
+		        <Button
+		            android:id="@+id/Zer0"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/zer0"
+		            android:onClick="prepareZer0"
+		            android:text="@string/zer0"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		
+		        <Button
+		            android:id="@+id/Salvador"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/salvador"
+		            android:onClick="prepareSalvador"
+		            android:text="@string/salvador"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		
+		        <Button
+		            android:id="@+id/Krieg"
+		            android:paddingTop="14sp"
+		            android:paddingRight="14sp"
+		            android:paddingLeft="14sp"
+		            style="?android:attr/borderlessButtonStyle"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:drawableTop="@drawable/krieg"
+		            android:onClick="prepareKrieg"
+		            android:text="@string/krieg"
+		            android:textSize="@dimen/abs__action_bar_subtitle_text_size" />
+		    </LinearLayout>
+	    </LinearLayout>
+</ScrollView>

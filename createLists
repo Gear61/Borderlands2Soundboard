@@ -2,25 +2,46 @@ cd lists
 rm *.txt
 cd ..
 
-cd Claptrap
-find *.mp3 > ../lists/Claptrap.txt
-cd ..
-cd Moxxi
-find *.mp3 > ../lists/Moxxi.txt
-cd ..
-cd Tiny_Tina
-find *.mp3 > ../lists/Tiny_Tina.txt
-cd ..
-cd Mister_Torgue
-find *.mp3 > ../lists/Mister_Torgue.txt
-cd ..
-cd Sir_Hammerlock
-find *.mp3 > ../lists/Sir_Hammerlock.txt
-cd ..
-cd Handsome_Jack
-find *.mp3 > ../lists/Handsome_Jack.txt
+cd ./Characters/Claptrap
+find *.mp3 > ../../lists/Claptrap.txt
+cd ../../
+cd ./Characters/Moxxi
+find *.mp3 > ../../lists/Moxxi.txt
+cd ../../
+cd ./Characters/Tiny_Tina
+find *.mp3 > ../../lists/Tiny_Tina.txt
+cd ../../
+cd ./Characters/Mister_Torgue
+find *.mp3 > ../../lists/Mister_Torgue.txt
+cd ../../
+cd ./Characters/Sir_Hammerlock
+find *.mp3 > ../../lists/Sir_Hammerlock.txt
+cd ../../
+cd ./Characters/Handsome_Jack
+find *.mp3 > ../../lists/Handsome_Jack.txt
+cd ../../
+cd ./Characters/Krieg
+find *.mp3 > ../../lists/Krieg.txt
+cd ../../
+cd ./Characters/Gaige
+find *.mp3 > ../../lists/Gaige.txt
+cd ../../
+cd ./Characters/Maya
+find *.mp3 > ../../lists/Maya.txt
+cd ../../
+cd ./Characters/Axton
+find *.mp3 > ../../lists/Axton.txt
+cd ../../
+cd ./Characters/Zer0
+find *.mp3 > ../../lists/Zer0.txt
+cd ../../
+cd ./Characters/Salvador
+find *.mp3 > ../../lists/Salvador.txt
+cd ../../
+cd ./Characters/Scooter
+find *.mp3 > ../../lists/Scooter.txt
 
-cd ../lists
+cd ../../lists
 allFiles=($(find *.txt))
 for file in "${allFiles[@]}"
 do

@@ -11,7 +11,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
@@ -459,7 +461,7 @@ public class MainActivity extends Activity
         });
 		
 		TextView list_message = (TextView) findViewById(R.id.message);
-		String stats = "This app currently has " + fileList.size() + " sound bites associated with <b>" + currentCharacter.replace("_", " ")
+		String stats = "This app currently has <b>" + fileList.size() + "</b> sound bites associated with <b>" + currentCharacter.replace("_", " ")
 				+ "</b>. Simply click on a file to hear it.";
 		list_message.setText(Html.fromHtml(stats));
 		
@@ -477,6 +479,12 @@ public class MainActivity extends Activity
 		currentCharacter = "All Chars";
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		invalidateOptionsMenu();
+	}
+	
+	public void prepareVaultHunters (View view)
+	{
+		setContentView(R.layout.vaulthunters);
+		currentCharacter = "Vault Hunters";
 	}
 	
 	public void about (View view)
@@ -536,12 +544,12 @@ public class MainActivity extends Activity
 		HashMap<String, Integer> listByPlays = datasource.getCharPlays();
 		ArrayList<Ranking> rankings = new ArrayList<Ranking>();
 		
-		rankings.add(new Ranking("Claptrap", listByPlays.get("Claptrap")));
-		rankings.add(new Ranking("Mister Torgue", listByPlays.get("Mister Torgue")));
-		rankings.add(new Ranking("Moxxi", listByPlays.get("Moxxi")));
-		rankings.add(new Ranking("Tiny Tina", listByPlays.get("Tiny Tina")));
-		rankings.add(new Ranking("Sir Hammerlock", listByPlays.get("Sir Hammerlock")));
-		rankings.add(new Ranking("Handsome Jack", listByPlays.get("Handsome Jack")));
+		Iterator<Entry<String, Integer>> it = listByPlays.entrySet().iterator();
+	    while (it.hasNext())
+	    {
+	        Map.Entry <String, Integer> pairs = (Entry<String, Integer>)it.next();
+	        rankings.add(new Ranking(pairs.getKey(), pairs.getValue()));
+	    }
 		
 		Collections.sort(rankings, new Comparator<Ranking>()
 		{
@@ -561,13 +569,8 @@ public class MainActivity extends Activity
 		
 		TextView characterList = (TextView) findViewById(R.id.character_rankings);
 		TextView characterPlays = (TextView) findViewById(R.id.character_plays);
-		String charList = "<b>Character</b><br>1. " + rankings.get(0).getRank() + "<br>2. " + rankings.get(1).getRank()
-						  + "<br>3. " + rankings.get(2).getRank() + "<br>4. " + rankings.get(3).getRank()
-						  + "<br>5. " + rankings.get(4).getRank() + "<br>6. " + rankings.get(5).getRank();
-		String charPlays = "<b># of Plays	</b>" + rankings.get(0).getTotalPlays() + "<br>" + rankings.get(1).getTotalPlays()
-						   + "<br>" + rankings.get(2).getTotalPlays()+ "<br>" + rankings.get(3).getTotalPlays()
-						   + "<br>" + rankings.get(4).getTotalPlays()+ "<br>" + rankings.get(5).getTotalPlays();
-		
+		String charList = Util.createCharList(rankings);
+		String charPlays = Util.createCharPlays(rankings);
 		characterList.setText(Html.fromHtml(charList));
 		characterPlays.setText(Html.fromHtml(charPlays));
 		
@@ -589,7 +592,6 @@ public class MainActivity extends Activity
 			TextView complain = (TextView) findViewById(R.id.complain);
 			complain.setText("Your Top 10 looks a little... empty there buddy.");
 		}
-		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
@@ -678,12 +680,60 @@ public class MainActivity extends Activity
 		setUpAudioList();
 	}
 	
+	public void prepareScooter (View view)
+	{
+		currentCharacter = "Scooter";
+		setUpAudioList();
+	}
+	
+	// VAULT HUNTERS
+	public void prepareKrieg (View view)
+	{
+		currentCharacter = "Krieg";
+		setUpAudioList();
+	}
+	
+	public void prepareSalvador (View view)
+	{
+		currentCharacter = "Salvador";
+		setUpAudioList();
+	}
+	
+	public void prepareMaya (View view)
+	{
+		currentCharacter = "Maya";
+		setUpAudioList();
+	}
+	
+	public void prepareAxton (View view)
+	{
+		currentCharacter = "Axton";
+		setUpAudioList();
+	}
+	
+	public void prepareZer0 (View view)
+	{
+		currentCharacter = "Zer0";
+		setUpAudioList();
+	}
+	
+	public void prepareGaige (View view)
+	{
+		currentCharacter = "Gaige";
+		setUpAudioList();
+	}
+	
 	public void randomFile () throws IOException
 	{
 		String columns[] = {MySQLiteHelper.COLUMN_NAME, MySQLiteHelper.COLUMN_CHARACTER};
 		String selection = null;
 		String selectionArgs[] = null;
-		if (!currentCharacter.equals("All Chars"))
+		if (currentCharacter.equals("Vault Hunters"))
+		{
+			selection = Util.vaultHunterSearch();
+			selectionArgs = Util.getAllVaultHunters();
+		}
+		else if (!currentCharacter.equals("All Chars"))
 		{
 			selection = MySQLiteHelper.COLUMN_CHARACTER + " = ?";
 			selectionArgs = new String[] {currentCharacter};
@@ -696,7 +746,6 @@ public class MainActivity extends Activity
 			// Update count
 			AudioFile tempFile = new AudioFile(cursor.getString(0), cursor.getString(1));
 			datasource.updateCount(tempFile, context);
-			
 			file = cursor.getString(1) + "/" + cursor.getString(0).trim() + ".mp3";
 		}
 		else
@@ -804,6 +853,49 @@ public class MainActivity extends Activity
 		list_message.setText(Html.fromHtml(stats));
 		criteria.setText("");
 	}
+	
+	public void narrowPlays(View view)
+	{
+		killKeyboard();
+		
+		// Get contents of textbox. Check it
+		EditText criteria = (EditText) findViewById(R.id.search_plays);
+		String quoteName = criteria.getText().toString();
+		
+		// Grab listview
+		final ListView listview = (ListView) findViewById(R.id.playResults);
+		// clear previous results in the LV
+		listview.setAdapter(null);
+		
+		ArrayList<Spanned> fileList = new ArrayList<Spanned>();
+		for (int i = 0; i < allTheStats.size(); i++)
+		{
+			if (allTheStats.get(i).toString().toLowerCase().contains(quoteName.toLowerCase()))
+			{
+				fileList.add(allTheStats.get(i));
+			}
+		}
+		
+		FileAdapter lvAdapter = new FileAdapter(context, fileList);
+		listview.setAdapter(lvAdapter);
+		
+		TextView list_message = (TextView) findViewById(R.id.message_play);
+		String stats;
+		if (fileList.size() == 0)
+		{
+			stats = "No audio files were found for your given search criteria.";
+		}
+		else if (quoteName.trim().equals(""))
+		{
+			stats = "This app currently has " + fileList.size() + " sound bites.";
+		}
+		else
+		{
+			stats = Integer.toString(fileList.size()) + " audio files were found for your given parameters.";
+		}
+		list_message.setText(Html.fromHtml(stats));
+		criteria.setText("");
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -841,6 +933,14 @@ public class MainActivity extends Activity
 					currentCharacter = "";
 					setContentView(R.layout.activity_main);
 					getActionBar().setDisplayHomeAsUpEnabled(false);
+				}
+				else if (currentCharacter.equals("Krieg") || currentCharacter.equals("Maya")
+						 || currentCharacter.equals("Zer0") || currentCharacter.equals("Salvador")
+						 || currentCharacter.equals("Axton") ||currentCharacter.equals("Gaige"))
+				{
+					killKeyboard();
+					currentCharacter = "Vault Hunters";
+					setContentView(R.layout.vaulthunters);
 				}
 				// We're on a character page
 				else

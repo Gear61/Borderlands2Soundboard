@@ -27,7 +27,7 @@
 	        android:layout_marginTop="10dp"
 	        android:text="@string/character_title"
 	        android:textSize="@dimen/ranking"
-	        android:textStyle="bold" />
+	        android:textStyle="bold"/>
 	    
 	    <RelativeLayout
 	        android:id="@+id/godLayout"

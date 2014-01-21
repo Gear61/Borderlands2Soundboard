@@ -20,6 +20,8 @@
 	<string name="top10_title">Top 10 Sound Bites</string>
     
     <!-- Characters page material -->
+    <string name="vault_hunters">Vault\nHunters</string>
+    <string name="scooter">Scooter\n</string>
 	<string name="claptrap">Claptrap\n</string>
 	<string name="mister_torgue">Mister\nTorgue</string>
 	<string name="moxxi">Moxxi\n</string>
@@ -27,6 +29,14 @@
 	<string name="sir_hammerlock">Sir\nHammerlock</string>
 	<string name="handsome_jack">Handsome\nJack</string>
 	<string name="CLAPPAY">Claptrap goin\' HAM.</string>
+	
+	<!-- Vault Hunters -->
+	<string name="axton">Axton\n</string>
+	<string name="zer0">Zer0\n</string>
+	<string name="maya">Maya\n</string>
+	<string name="salvador">Salvador\n</string>
+	<string name="gaige">Gaige\n</string>
+	<string name="krieg">Krieg\n</string>
 	    				 
 	<!-- About -->
 	<string name="about_text">Hello fellow Vault Hunter and thank you for downloading 
