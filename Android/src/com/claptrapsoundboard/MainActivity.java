@@ -34,20 +34,18 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.text.Html;
 import android.text.Spanned;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -83,6 +81,30 @@ public class MainActivity extends Activity
 	public void setResolver()
 	{
 		resolver = getContentResolver();
+	}
+	
+	// confirm app close on back button press
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		if (keyCode == KeyEvent.KEYCODE_BACK)
+		{
+			new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert)
+					.setMessage("Would you like to exit the app?")
+					.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int which)
+						{
+							// Stop the activity
+							MainActivity.this.finish();
+						}
+					}).setNegativeButton("No", null).show();
+		}
+		// In case another button was pressed, the super method shall be called
+		else
+			return super.onKeyDown(keyCode, event);
+		return false;
 	}
 	
 	public static void ringConfirmation(String message, final String fileName, final Context context)
