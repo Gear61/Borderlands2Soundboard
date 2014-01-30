@@ -6,8 +6,9 @@
     <string name="hello_world">Hello world!</string>
     
     <!-- Progress page material -->
-    <string name="intro">Our app has detected that this is your first time running this app or that our card database has changed.
-        Please wait while we rebuild your personal Weiss Schwarz database (or do something else on your phone).</string>
+    <string name="intro">Our app has detected that this is your first time running this app or 
+        that our sound bite database has changed. Please wait while we rebuild your personal 
+        Borderlands 2 soundboard database (or do something else on your phone).</string>
     
     <!-- Main page material -->
 	<string name="characters">Characters\n</string>
@@ -43,13 +44,10 @@
 	    				 my Borderlands 2 soundboard! Before you delve into the wonderful audio 
 	    				 world of Pandora, here are some quick tips to help you use 
 	    				 this app:\n\n
-	    				 - When you\'re on a character\'s page or the all characters page, 
-	    				 the single note icon in the action bar acts as a \"random\" button. 
-	    				 So when you\'re on the all characters page, hitting that button will 
-	    				 play a random audio bite from our entire library while using it on 
-	    				 a specific character\'s page will play a file from that character.
-	    				 \n\n- Hold/long click on a file to set it as your ringtone
-	    				 \n\n- Search for nothing to bring back full lists of files
+	    				 - The single note icon in the action bar acts as a \"random\" button. 
+	    				 The pool of files from which it draws on corresponds to the page you\'re currently on.
+	    				 \n\n- Hold/long click on a file to set it as your ringtone or notification tone.
+	    				 \n\n- Search for nothing to bring back full lists of files.
 	    				 \n\n- If you go to the \"Stats\" page, you\'ll see that you have a rank based on how 
 	    				 much you\'ve used this app. Because I\'m evil, it\'s up to you to figure out 
 	    				 the number of ranks I\'ve created and how to reach each one. Happy playing!

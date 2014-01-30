@@ -1,13 +1,19 @@
 package com.claptrapsoundboard;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
@@ -16,6 +22,35 @@ import android.widget.TextView;
 
 public class Util
 {
+	public static ContentValues createConValues(File newSoundFile, Context context, String currentCharacter, String type)
+	{
+		// Set up MediaPlayer to get file duration in ms
+		MediaPlayer mp = MediaPlayer.create(context, Uri.parse(Environment.getExternalStorageDirectory().getPath()
+				+ "/Borderlands2/Ringtones/borderlands2ringtone.ogg"));
+
+		ContentValues values = new ContentValues();
+		values.put(MediaStore.MediaColumns.DATA, newSoundFile.getAbsolutePath());
+		values.put(MediaStore.MediaColumns.TITLE, type);
+		values.put(MediaStore.MediaColumns.SIZE, newSoundFile.length());
+		values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/ogg");
+		values.put(MediaStore.Audio.Media.ARTIST, currentCharacter.replace("_", " "));
+		values.put(MediaStore.Audio.Media.DURATION, mp.getDuration());
+		if (type.equals("Borderlands 2 Ringtone"))
+		{
+			values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+			values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
+		}
+		if (type.equals("Borderlands 2 Notification"))
+		{
+			values.put(MediaStore.Audio.Media.IS_RINGTONE, false);
+			values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
+		}
+		values.put(MediaStore.Audio.Media.IS_ALARM, false);
+		values.put(MediaStore.Audio.Media.IS_MUSIC, false);
+		
+		return values;
+	}
+	
 	public static String addS(int size)
 	{
 		if (size == 1) {return "";}
