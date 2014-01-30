@@ -2,9 +2,7 @@ package com.claptrapsoundboard;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,18 +14,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.AssetFileDescriptor;
@@ -118,116 +111,16 @@ public class MainActivity extends Activity
 					public void onClick(DialogInterface dialog, int whichButton)
 					{
 						dialog.cancel();
-						// Set ringtone
-						File newSoundFile = new File(Environment.getExternalStorageDirectory().getPath() + 
-								"/Borderlands2/Ringtones", "borderlands2ringtone.ogg");
-						if (newSoundFile.exists())
-						{
-							newSoundFile.delete();
-						}
-	
-						InputStream fis;
-						try
-						{
-							fis = manager.open(currentCharacter + "/" + fileName);
-						}
-						catch (IOException e)
-						{
-							Util.showDialog("We were unable to set your ringtone.", context);
-							return;
-						}
-
-						try
-						{
-							byte[] readData = new byte[1024];
-							FileOutputStream fos = new FileOutputStream(newSoundFile);
-							int i = fis.read(readData);
-
-							while (i != -1)
-							{
-								fos.write(readData, 0, i);
-								i = fis.read(readData);
-							}
-							fos.close();
-						}
-						catch (IOException io)
-						{
-							Util.showDialog("We were unable to set your ringtone.", context);
-							return;
-						}
-						
-						ContentValues values = Util.createConValues(newSoundFile, context,
-																	currentCharacter, "Borderlands 2 Ringtone");
-						
-						// Remove all previous incarnations of the Borderlands 2 ringtone
-						String where = MediaStore.MediaColumns.TITLE + " = ?";
-						String[] args = new String[] {"Borderlands 2 Ringtone"};
-						resolver.delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, where, args);
-						
-						// Insert new ringtone into the database
-						Uri uri = MediaStore.Audio.Media.getContentUriForPath(newSoundFile.getAbsolutePath());
-						Uri newUri = resolver.insert(uri, values);
-
-						RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri);
-						Util.showDialog("Your ringtone was successfully changed.", context);
+						Util.setTone(fileName, context, currentCharacter,
+								     "Borderlands 2 Ringtone", manager, resolver);
 					}
 				}).setNeutralButton("Notification Tone", new DialogInterface.OnClickListener()
 				{
 					public void onClick(final DialogInterface dialog, int id)
 					{
 						dialog.cancel();
-						// Set ringtone
-						File newSoundFile = new File(Environment.getExternalStorageDirectory().getPath() + 
-								"/Borderlands2/Ringtones", "borderlands2notificationtone.ogg");
-						if (newSoundFile.exists())
-						{
-							newSoundFile.delete();
-						}
-	
-						InputStream fis;
-						try
-						{
-							fis = manager.open(currentCharacter + "/" + fileName);
-						}
-						catch (IOException e)
-						{
-							Util.showDialog("We were unable to set your notification tone.", context);
-							return;
-						}
-
-						try
-						{
-							byte[] readData = new byte[1024];
-							FileOutputStream fos = new FileOutputStream(newSoundFile);
-							int i = fis.read(readData);
-
-							while (i != -1)
-							{
-								fos.write(readData, 0, i);
-								i = fis.read(readData);
-							}
-							fos.close();
-						}
-						catch (IOException io)
-						{
-							Util.showDialog("We were unable to set your notification tone.", context);
-							return;
-						}
-						
-						ContentValues values = Util.createConValues(newSoundFile, context, 
-																	currentCharacter, "Borderlands 2 Notification");
-						
-						// Remove all previous incarnations of the Borderlands 2 notification
-						String where = MediaStore.MediaColumns.TITLE + " = ?";
-						String[] args = new String[] {"Borderlands 2 Notification"};
-						resolver.delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, where, args);
-						
-						// Insert new ringtone into the database
-						Uri uri = MediaStore.Audio.Media.getContentUriForPath(newSoundFile.getAbsolutePath());
-						Uri newUri = resolver.insert(uri, values);
-
-						RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION, newUri);
-						Util.showDialog("Your notification tone was successfully changed.", context);
+						Util.setTone(fileName, context, currentCharacter,
+							     	 "Borderlands 2 Notification", manager, resolver);
 					}
 				}).setPositiveButton("Neither", new DialogInterface.OnClickListener()
 				{
