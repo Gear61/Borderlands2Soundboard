@@ -10,6 +10,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper
 	// Table name
 	public static final String FILES_TABLE_NAME = "AudioFiles";
 	public static final String PLAYS_TABLE_NAME = "PlayCount";
+	public static final String FAVORITES_TABLE_NAME = "Favorites";
 
 	// COLUMNS
 	public static final String COLUMN_NAME = "name";
@@ -26,6 +27,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper
 	static final String PLAYS_CREATE = "CREATE TABLE " + PLAYS_TABLE_NAME + "(" + COLUMN_NAME
 									   + " TEXT, " + COLUMN_CHARACTER + " TEXT, " + COLUMN_PLAYS
 									   + " INT);";
+	static final String FAVORITES_CREATE = "CREATE TABLE " + FAVORITES_TABLE_NAME + "(" + COLUMN_NAME
+			   							   + " TEXT, " + COLUMN_CHARACTER + " TEXT);";
 	
 	static final String[] indexes = {"CREATE INDEX name_index ON " + FILES_TABLE_NAME + " (" + COLUMN_NAME + ");",
 									 "CREATE INDEX character_index ON " + FILES_TABLE_NAME + " (" + COLUMN_CHARACTER + ");"};
@@ -46,6 +49,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper
 			database.execSQL(indexes[i]);
 		}
 		database.execSQL(PLAYS_CREATE);
+		database.execSQL(FAVORITES_CREATE);
 	}
 
 	@Override
@@ -55,6 +59,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper
 				+ ", which will destroy all old data");
 		db.execSQL("DROP TABLE IF EXISTS " + FILES_TABLE_NAME);
 		db.execSQL("DROP TABLE IF EXISTS " + PLAYS_TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + FAVORITES_TABLE_NAME);
 		onCreate(db);
 	}
 }

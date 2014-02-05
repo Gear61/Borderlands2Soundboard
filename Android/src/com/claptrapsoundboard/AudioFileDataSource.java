@@ -66,19 +66,89 @@ public class AudioFileDataSource
 		database.insert(MySQLiteHelper.PLAYS_TABLE_NAME, null, values);
 	}
 	
-	public boolean playsExist()
+	// If file is favorited, return true, else false
+	public boolean isFavorited(AudioFile file)
+	{
+		if (!tableExists("Favorites"))
+		{
+			database.execSQL(MySQLiteHelper.FAVORITES_CREATE);
+		}
+		
+		String selection = MySQLiteHelper.COLUMN_NAME + " = ? AND " + 
+							 MySQLiteHelper.COLUMN_CHARACTER + " = ?";
+		String[] selectionArgs = {file.getName(), file.getCharacter()};
+		Cursor cursor = database.query(MySQLiteHelper.FAVORITES_TABLE_NAME, null, selection,
+									   selectionArgs, null, null, null);
+		
+		if (cursor.moveToFirst())
+		{
+			cursor.close();
+			return true;
+		}
+		cursor.close();
+		return false;
+	}
+	
+	// Get number of files user has favorited
+	public int numFavorites()
+	{
+		if (!tableExists("Favorites"))
+		{
+			database.execSQL(MySQLiteHelper.FAVORITES_CREATE);
+		}
+		
+		String columns[] = {"COUNT (*)"};
+		Cursor cursor = database.query(MySQLiteHelper.FAVORITES_TABLE_NAME, columns,
+					    null, null, null, null, null);
+		
+		cursor.moveToFirst();
+		return cursor.getInt(0);
+	}
+	
+	// This toggles a file's "favorite" state. TRUE = favorited, FALSE = unfavorited
+	public boolean toggleFavorite(AudioFile file)
+	{	
+		if (isFavorited(file))
+		{
+			String whereArgs[] = {file.getName(), file.getCharacter()};
+			database.delete(MySQLiteHelper.FAVORITES_TABLE_NAME,
+					MySQLiteHelper.COLUMN_NAME + " = ? AND " + 
+					MySQLiteHelper.COLUMN_CHARACTER + " = ?", whereArgs);
+			return false;
+		}
+		else
+		{
+			ContentValues values = new ContentValues();
+			values.put(MySQLiteHelper.COLUMN_NAME, file.getName());
+			values.put(MySQLiteHelper.COLUMN_CHARACTER, file.getCharacter());
+			database.insert(MySQLiteHelper.FAVORITES_TABLE_NAME, null, values);
+			return true;
+		}
+	}
+	
+	public boolean tableExists(String target)
 	{
 		open();
 		String[] columns = {"name"};
 		String selection = "type = 'table' AND name = ?";
-		String selectionArgs[] = {MySQLiteHelper.PLAYS_TABLE_NAME};
+		String selectionArgs[] = new String[1];
+		if (target.equals("Play Count"))
+		{
+			selectionArgs[0] = MySQLiteHelper.PLAYS_TABLE_NAME;
+		}
+		if (target.equals("Favorites"))
+		{
+			selectionArgs[0] = MySQLiteHelper.FAVORITES_TABLE_NAME;
+		}
 		Cursor cursor = database.query("sqlite_master", columns, selection, selectionArgs, null, null, null);
 		if (cursor.moveToFirst())
 		{
+			cursor.close();
 			return true;
 		}
 		else
 		{
+			cursor.close();
 			return false;
 		}
 	}
@@ -87,7 +157,7 @@ public class AudioFileDataSource
 	{
 		open();
 		
-		if (!playsExist())
+		if (!tableExists("Play Count"))
 		{
 			database.execSQL(MySQLiteHelper.PLAYS_CREATE);
 		}
@@ -129,7 +199,7 @@ public class AudioFileDataSource
 	{
 		open();
 		
-		if (!playsExist())
+		if (!tableExists("Play Count"))
 		{
 			database.execSQL(MySQLiteHelper.PLAYS_CREATE);
 		}
@@ -159,7 +229,7 @@ public class AudioFileDataSource
 		int sum = 0;
 		open();
 		
-		if (!playsExist())
+		if (!tableExists("Play Count"))
 		{
 			database.execSQL(MySQLiteHelper.PLAYS_CREATE);
 		}
@@ -180,7 +250,7 @@ public class AudioFileDataSource
 	{
 		open();
 		
-		if (!playsExist())
+		if (!tableExists("Play Count"))
 		{
 			database.execSQL(MySQLiteHelper.PLAYS_CREATE);
 		}
@@ -196,7 +266,7 @@ public class AudioFileDataSource
 		int sum = 0;
 		open();
 		
-		if (!playsExist())
+		if (!tableExists("Play Count"))
 		{
 			database.execSQL(MySQLiteHelper.PLAYS_CREATE);
 		}
@@ -259,15 +329,27 @@ public class AudioFileDataSource
 		close();
 	}
 	
-	public Cursor execQuery(String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy)
+	public Cursor execQuery(String[] columns, String selection, 
+							String[] selectionArgs, String groupBy, String having, String orderBy)
 	{
 		open();
-		return database.query(MySQLiteHelper.FILES_TABLE_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
+		return database.query(MySQLiteHelper.FILES_TABLE_NAME, columns, selection, selectionArgs,
+							  groupBy, having, orderBy);
 	}
 	
-	public Cursor execPlaysQuery(String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy)
+	public Cursor execPlaysQuery(String[] columns, String selection,
+								 String[] selectionArgs, String groupBy, String having, String orderBy)
 	{
 		open();
-		return database.query(MySQLiteHelper.PLAYS_TABLE_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
+		return database.query(MySQLiteHelper.PLAYS_TABLE_NAME, columns, selection, selectionArgs,
+							  groupBy, having, orderBy);
+	}
+	
+	public Cursor execFavoritesQuery(String[] columns, String selection,
+			 String[] selectionArgs, String groupBy, String having, String orderBy)
+	{
+		open();
+		return database.query(MySQLiteHelper.FAVORITES_TABLE_NAME, columns, selection, selectionArgs,
+							  groupBy, having, orderBy);
 	}
 }

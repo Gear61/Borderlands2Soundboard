@@ -26,6 +26,23 @@ import android.widget.TextView;
 
 public class Util
 {
+	// Parses Character: Quote into its respective components
+	public static AudioFile parseData(String quote, String currentCharacter)
+	{
+		AudioFile returnFile = new AudioFile();
+		if (quote.contains(": "))
+		{
+			returnFile.setCharacter(quote.split(": ")[0].replace(" ", "_"));
+			returnFile.setName(quote.split(": ")[1]);
+		}
+		else
+		{
+			returnFile.setCharacter(currentCharacter);
+			returnFile.setName(quote);
+		}
+		return returnFile;
+	}
+	
 	public static void setTone(String fileName, Context context, String currentCharacter,
 							   String type, AssetManager manager, ContentResolver resolver)
 	{
@@ -132,10 +149,15 @@ public class Util
 		return "s";
 	}
 	
-	public static String verb(int size)
+	public static String verb(int size, boolean pastTense)
 	{
-		if (size == 1) {return "was";}
-		return "were";
+		if (pastTense)
+		{
+			if (size == 1) {return "was";}
+			return "were";
+		}
+		if (size == 1) {return "is";}
+		return "are";
 	}
 	
 	public static void createCharRow(TableLayout table, String first, String second,

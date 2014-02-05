@@ -53,10 +53,10 @@ public class MainActivity extends Activity
 	private TextView tv;
 	private ProgressBar pb;
 	private static String currentCharacter = "";
-	private int lastKnownPlayCount = 0;
+	private int lastKnownFavoriteCount = 0;
 	MediaPlayer player = new MediaPlayer();
 	Map<String, ArrayList<Spanned>> cache = new HashMap<String, ArrayList<Spanned>>();
-	ArrayList<Spanned> allTheStats = new ArrayList<Spanned> ();
+	ArrayList<Spanned> allFavorites = new ArrayList<Spanned> ();
 	
 	private int fileSize = 0;
 	final public int getFileSize()
@@ -76,7 +76,7 @@ public class MainActivity extends Activity
 		resolver = getContentResolver();
 	}
 	
-	// confirm app close on back button press
+	// Confirm app close on back button press
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
@@ -100,7 +100,8 @@ public class MainActivity extends Activity
 		return false;
 	}
 	
-	public static void toneConfirmation(String message, final String fileName, final Context context)
+	public static void toneConfirmation(String message, final String fileName, final Context context,
+										final String character)
 	{
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
@@ -111,7 +112,7 @@ public class MainActivity extends Activity
 					public void onClick(DialogInterface dialog, int whichButton)
 					{
 						dialog.cancel();
-						Util.setTone(fileName, context, currentCharacter,
+						Util.setTone(fileName, context, character,
 								     "Borderlands 2 Ringtone", manager, resolver);
 					}
 				}).setNeutralButton("Notification Tone", new DialogInterface.OnClickListener()
@@ -119,7 +120,7 @@ public class MainActivity extends Activity
 					public void onClick(final DialogInterface dialog, int id)
 					{
 						dialog.cancel();
-						Util.setTone(fileName, context, currentCharacter,
+						Util.setTone(fileName, context, character,
 							     	 "Borderlands 2 Notification", manager, resolver);
 					}
 				}).setPositiveButton("Neither", new DialogInterface.OnClickListener()
@@ -360,7 +361,7 @@ public class MainActivity extends Activity
 			cursor.close();
 		}
 		
-		FileAdapter lvAdapter = new FileAdapter(context, fileList);
+		FileAdapter lvAdapter = new FileAdapter(context, fileList, currentCharacter, datasource);
 		listview.setAdapter(lvAdapter);
 		
 		listview.setOnItemClickListener(new OnItemClickListener()
@@ -413,7 +414,7 @@ public class MainActivity extends Activity
             	String fileName = ((Spanned) parent.getItemAtPosition(position)).toString().trim();
             	String message = "Set the quote <i>\"" + fileName + "\"</i> by <b>"
             					 + currentCharacter.replace("_", " ") + "</b> as my:";
-            	toneConfirmation(message, fileName + ".mp3", context);
+            	toneConfirmation(message, fileName + ".mp3", context, currentCharacter);
                 return true;
             }
         });
@@ -524,51 +525,108 @@ public class MainActivity extends Activity
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
-	public void moreStats (View view)
+	public void showFavorites (View view)
 	{
+		currentCharacter = "Favorites";
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		setContentView(R.layout.playcounts);
+		setContentView(R.layout.favorites);
+		invalidateOptionsMenu();
 		
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		TextView title = (TextView) findViewById(R.id.title_play);
-		title.setText("Play Counts");
-		int currentPlayCount = datasource.getRanking().getTotalPlays();
+		TextView title = (TextView) findViewById(R.id.title_favorites);
+		title.setText("Favorites");
+		int currentFavoriteCount = datasource.numFavorites();
 		
-		final ListView listview = (ListView) findViewById(R.id.playResults);
+		final ListView listview = (ListView) findViewById(R.id.favorites_list);
 
 		// clear previous results in the LV
 		listview.setAdapter(null);
 		
-		if (allTheStats.size() == 0 || lastKnownPlayCount != currentPlayCount)
+		if (allFavorites.size() == 0 || lastKnownFavoriteCount != currentFavoriteCount)
 		{
-			allTheStats.clear();
+			allFavorites.clear();
 			
 			datasource.open();
 			String[] columns = {MySQLiteHelper.COLUMN_NAME, MySQLiteHelper.COLUMN_CHARACTER};
-			Cursor cursor = datasource.execQuery(columns, null, null, null, null, null);
+			Cursor cursor = datasource.execFavoritesQuery(columns, null, null, null, null, null);
 			while(cursor.moveToNext())
 			{
-				String addition = "<b>Quote: </b>" + cursor.getString(0) + "<br>";
-				addition += "<b>Character: </b>" + cursor.getString(1).replace("_", " ") + "<br>";
-				int playCount = datasource.getCount(new AudioFile(cursor.getString(0), cursor.getString(1)));
-				addition += "<b># of Plays: </b>" + playCount;
-				allTheStats.add(Html.fromHtml(addition));
+				String addition = "<b>" + cursor.getString(1).replace("_", " ") + ": </b>" + cursor.getString(0);
+				allFavorites.add(Html.fromHtml(addition));
 			}
-			lastKnownPlayCount = datasource.getRanking().getTotalPlays();
+			lastKnownFavoriteCount = currentFavoriteCount;
 			cursor.close();
 		}
 		
-		FileAdapter lvAdapter = new FileAdapter(context, allTheStats);
+		FileAdapter lvAdapter = new FileAdapter(context, allFavorites, currentCharacter, datasource);
 		listview.setAdapter(lvAdapter);
 		
-		TextView list_message = (TextView) findViewById(R.id.message_play);
-		String stats = "To be honest, this is just here because I wanted a 4th feature but had no good ideas. :/";
+		listview.setOnItemClickListener(new OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(AdapterView<?> parent, final View view, int position, long id) throws IllegalArgumentException, IllegalStateException
+			{
+				player.reset();
+				AssetFileDescriptor afd = null;
+				
+				String fileName = ((Spanned) parent.getItemAtPosition(position)).toString().trim();
+				AudioFile tempFile = Util.parseData(fileName, currentCharacter);
+				String file = tempFile.getCharacter() + "/" + tempFile.getName() + ".mp3";
+				
+				datasource.updateCount(tempFile, context);
+				try
+				{
+					afd = getAssets().openFd(file);
+				}
+				catch (IOException e)
+				{
+					Util.showDialog("We are unable to play the requested audio file.", context);
+					return;
+				}
+				try
+				{
+					player.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+				}
+				catch (IOException e1)
+				{
+					Util.showDialog("We are unable to play the requested audio file.", context);
+					e1.printStackTrace();
+				}
+				try
+				{
+					player.prepare();
+				}
+				catch (IOException e)
+				{
+					Util.showDialog("We are unable to play the requested audio file.", context);
+					e.printStackTrace();
+				}
+			    player.start();
+			}
+		});
+		
+		listview.setOnItemLongClickListener(new OnItemLongClickListener()
+		{
+            public boolean onItemLongClick(AdapterView<?> parent, final View view, int position, long id)
+            {
+            	String fileName = ((Spanned) parent.getItemAtPosition(position)).toString().trim();
+            	AudioFile tempFile = Util.parseData(fileName, currentCharacter);
+            	String message = "Set the quote <i>\"" + tempFile.getName() + "\"</i> by <b>"
+            					 + tempFile.getCharacter().replace("_", " ") + "</b> as my:";
+            	toneConfirmation(message, tempFile.getName() + ".mp3", context,
+            					 tempFile.getCharacter().replace("_", " "));
+                return true;
+            }
+        });
+		
+		TextView list_message = (TextView) findViewById(R.id.favorites_message);
+		String stats = "Here are your <b>" + currentFavoriteCount + "</b> favorites."; 
 		list_message.setText(Html.fromHtml(stats));
 		
-		AutoCompleteTextView cardSearch = (AutoCompleteTextView)findViewById(R.id.search_plays);
+		AutoCompleteTextView cardSearch = (AutoCompleteTextView)findViewById(R.id.search_favorites);
 		@SuppressWarnings("unchecked")
 		TextAdapter adapter = new TextAdapter(context, android.R.layout.simple_dropdown_item_1line,
-											  (ArrayList<Spanned>) allTheStats.clone());
+											  (ArrayList<Spanned>) allFavorites.clone());
 		cardSearch.setAdapter(adapter);
 	}
 	
@@ -667,7 +725,15 @@ public class MainActivity extends Activity
 			selection = MySQLiteHelper.COLUMN_CHARACTER + " = ?";
 			selectionArgs = new String[] {currentCharacter};
 		}
-		Cursor cursor = datasource.execQuery(columns, selection, selectionArgs, null, null, "RANDOM() LIMIT 1");
+		Cursor cursor;
+		if (currentCharacter.equals("Favorites"))
+		{
+			cursor = datasource.execFavoritesQuery(columns, null, null, null, null, "RANDOM() LIMIT 1");
+		}
+		else
+		{
+			cursor = datasource.execQuery(columns, selection, selectionArgs, null, null, "RANDOM() LIMIT 1");
+		}
 		
 		String file = "";
 		if (cursor.moveToNext())
@@ -692,6 +758,7 @@ public class MainActivity extends Activity
 		player.start();
 	}
 	
+	// Search functions
 	public void narrowResults(View view)
 	{
 		killKeyboard();
@@ -717,7 +784,7 @@ public class MainActivity extends Activity
 		}
 		cursor.close();
 		
-		FileAdapter lvAdapter = new FileAdapter(context, fileList);
+		FileAdapter lvAdapter = new FileAdapter(context, fileList, currentCharacter, datasource);
 		listview.setAdapter(lvAdapter);
 		
 		TextView list_message = (TextView) findViewById(R.id.message);
@@ -728,44 +795,45 @@ public class MainActivity extends Activity
 		}
 		else if (quoteName.trim().equals(""))
 		{
-			stats = "This app currently has <b>" + fileList.size() + "</b> sound bites associated with <b>" + currentCharacter.replace("_", " ")
-					+ "</b>.";
+			stats = "This app currently has <b>" + fileList.size() + 
+					"</b> sound bites associated with <b>" + currentCharacter.replace("_", " ") + "</b>.";
 		}
 		else
 		{
 			stats = "<b>" + Integer.toString(fileList.size()) + "</b> audio file" +
-				    Util.addS(fileList.size()) + " " + Util.verb(fileList.size()) + " found for your given parameters.";
+				    Util.addS(fileList.size()) + " " + Util.verb(fileList.size(), true) + 
+				    " found for your given parameters.";
 		}
 		list_message.setText(Html.fromHtml(stats));
 		criteria.setText("");
 	}
 	
-	public void narrowPlays(View view)
+	public void narrowFavorites(View view)
 	{
 		killKeyboard();
 		
 		// Get contents of textbox. Check it
-		EditText criteria = (EditText) findViewById(R.id.search_plays);
+		EditText criteria = (EditText) findViewById(R.id.search_favorites);
 		String quoteName = criteria.getText().toString();
 		
 		// Grab listview
-		final ListView listview = (ListView) findViewById(R.id.playResults);
+		final ListView listview = (ListView) findViewById(R.id.favorites_list);
 		// clear previous results in the LV
 		listview.setAdapter(null);
 		
 		ArrayList<Spanned> fileList = new ArrayList<Spanned>();
-		for (int i = 0; i < allTheStats.size(); i++)
+		for (int i = 0; i < allFavorites.size(); i++)
 		{
-			if (allTheStats.get(i).toString().toLowerCase().contains(quoteName.toLowerCase()))
+			if (allFavorites.get(i).toString().toLowerCase().contains(quoteName.toLowerCase()))
 			{
-				fileList.add(allTheStats.get(i));
+				fileList.add(allFavorites.get(i));
 			}
 		}
 		
-		FileAdapter lvAdapter = new FileAdapter(context, fileList);
+		FileAdapter lvAdapter = new FileAdapter(context, fileList, currentCharacter, datasource);
 		listview.setAdapter(lvAdapter);
 		
-		TextView list_message = (TextView) findViewById(R.id.message_play);
+		TextView list_message = (TextView) findViewById(R.id.favorites_message);
 		String stats;
 		if (fileList.size() == 0)
 		{
@@ -773,16 +841,19 @@ public class MainActivity extends Activity
 		}
 		else if (quoteName.trim().equals(""))
 		{
-			stats = "This app currently has " + fileList.size() + " sound bites.";
+			stats = "Here " + Util.verb(fileList.size(), false) + " your <b>" + fileList.size() +
+					"</b> favorite" + Util.addS(fileList.size()) + ".";
 		}
 		else
 		{
-			stats = Integer.toString(fileList.size()) + " audio files were found for your given parameters.";
+			stats = "<b>" + Integer.toString(fileList.size()) + "</b> audio file" + Util.addS(fileList.size()) +
+					" " + Util.verb(fileList.size(), true) + " found for your given parameters.";
 		}
 		list_message.setText(Html.fromHtml(stats));
 		criteria.setText("");
 	}
 
+	// Action Bar functions
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -814,7 +885,8 @@ public class MainActivity extends Activity
 			// I use the home button as a derpy back button
 			case android.R.id.home:
 				killKeyboard();
-				if (currentCharacter.equals("") || currentCharacter.equals("All Chars"))
+				if (currentCharacter.equals("") || currentCharacter.equals("All Chars")
+					|| currentCharacter.equals("Favorites"))
 				{
 					currentCharacter = "";
 					setContentView(R.layout.activity_main);
